@@ -2,53 +2,84 @@
 
 class RepositorioAmigo
 {
-    public Amigo[] amigos = new Amigo[100];
-    public int contadoramigo = 0;
+    public Amigo[] amigos = new Amigo[5];
+    public int contadorAmigo = 0;
 
-    public void Inserir(Amigo amigo)
+    public string Inserir(Amigo novoAmigo)
     {
-        amigos[contadoramigo] = amigo;
-        contadoramigo++;
+        if (VerificarLimiteAmigos())
+            return "Limite de amigos atingido.";
+        
+
+        else if (VerificaAmigoJaExiste(novoAmigo)) 
+            return"Amigo já cadastrado.";
+
+        else
+        {           
+            amigos[contadorAmigo++] = novoAmigo;
+            return "(V) Amigo cadastrado com sucesso!";
+        }          
     }
 
-    public void Editar(int Id, Amigo novoamigo)
+
+    public bool Editar(int Id, Amigo novoamigo)
     {
         foreach (Amigo amigo in amigos)
         {
-            if (amigo.Id == Id)
+            if (amigo != null)
             {
-               amigo.Nome = novoamigo.Nome;
-               amigo.NomeResponsavel = novoamigo.NomeResponsavel;
-               amigo.Telefone = novoamigo.Telefone;
+                if (amigo.Id == Id)
+                {
+                    amigo.Nome = novoamigo.Nome;
+                    amigo.NomeResponsavel = novoamigo.NomeResponsavel;
+                    amigo.Telefone = novoamigo.Telefone;
+                    
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    public void Excluir(int Id)
+    public void Excluir(int Id)           //● Não permitir excluir um amigo caso tenha empréstimos vinculados(status pendente)
     {
-        foreach (Amigo amigo in amigos)
+        for (int i = 0; i < amigos.Length; i++)
         {
-            if (amigo.Id == Id)
+            if (amigos[i] != null)
             {
-                amigo.Nome = null;
-                amigo.NomeResponsavel = null;
-                amigo.Telefone = null;
+                if (amigos[i].Id == Id)
+                {
+                    amigos[i] = null;
+                    contadorAmigo--;
+                    break;
+                }
             }
         }
     }
 
     public Amigo[] SelecionarTodos()
     {
-        Amigo[] amigosSelecionados = new Amigo[contadoramigo];
+        int contadoramigosPreenchidos = 0;
 
-        foreach (Amigo amigo in amigos)
+        foreach (Amigo amigo in amigos) 
         {
             if (amigo != null)
-            {
-                amigosSelecionados[contadoramigo] = amigo;
-                contadoramigo++;
-            }
+                contadoramigosPreenchidos++;
         }
+
+        Amigo[] amigosSelecionados = new Amigo[contadoramigosPreenchidos];
+
+        int contador = 0;
+
+        foreach (Amigo amigo in amigos)
+        {  
+            if (amigo != null)
+            {
+                amigosSelecionados[contador] = amigo;
+                contador++;
+            }                      
+        }
+
         return amigosSelecionados;
     }
 
@@ -62,46 +93,54 @@ class RepositorioAmigo
         return null;
     }
 
-    public void VisualizarEmprestimo(int Id)
-    {
-        foreach (Amigo amigo in amigos)
-        {
-            if (amigo.Id == Id)
-            {
-                Console.WriteLine($"Nome: {amigo.Nome}");
-                Console.WriteLine($"Nome Responsável: {amigo.NomeResponsavel}");
-                Console.WriteLine($"Telefone: {amigo.Telefone}");
-                Console.WriteLine($"Emprestimo: {amigo.Emprestimo}"); // adicionar qual revista e titulo
-            }
-        }
-    }
+    //public Emprestimo[] VisualizarEmprestimos(int Id) // terminar para exibir todos os emprstimos(.status))
+    //{
+    //    foreach (Amigo amigo in amigos)
+    //    {
+    //        if (amigo.Id == Id)
+    //        {
+    //            Console.WriteLine($"Nome: {amigo.Nome}");
+    //            Console.WriteLine($"Nome Responsável: {amigo.NomeResponsavel}");
+    //            Console.WriteLine($"Telefone: {amigo.Telefone}");
+    //            Console.WriteLine($"Emprestimo: {amigo.Emprestimo.status}"); // adicionar qual revista e titulo
+    //        }
+    //    }
+    //}
 
-    //● Não pode haver amigos com o mesmo nome e telefone.
-    public bool VerificaAmigoExistente(string nome, string telefone)
+    public bool VerificaAmigoJaExiste(Amigo novoAmigo)
     {
+        bool jaExiste = false;
         foreach (Amigo amigo in amigos)
         {
             if (amigo != null)
             {
-                if (amigo.Nome == nome && amigo.Telefone == telefone)
-                    return true;
+                if (amigo.Nome == novoAmigo.Nome && amigo.Telefone == novoAmigo.Telefone)
+                {
+                    jaExiste = true;
+                } 
             }
         }
-        return false;
+        return jaExiste;
     }
 
-    //● Não permitir excluir um amigo caso tenha empréstimos vinculados
+    //● Não permitir excluir um amigo caso tenha empréstimos vinculados em aberto
     public bool VerificaEmprestimoExistente(int Id)
     {
         foreach (Amigo amigo in amigos)
         {
             if (amigo != null)
             {
-                if (amigo.Id == Id && amigo.Emprestimo != null)
+                if (amigo.Id == Id && amigo.Emprestimo != null) // finalizas apos o modulo emprestimo
                     return true;
             }
         }
         return false;
     }
 
+    public bool VerificarLimiteAmigos()
+    {
+        if (contadorAmigo == amigos.Length)          
+            return true;      
+        return false;
+    }
 }
