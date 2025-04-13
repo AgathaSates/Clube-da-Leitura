@@ -46,9 +46,12 @@ class Amigo
             erros += "> O Nome Responsável deve ter entre 3 e 100 caracteres\n";
 
         if (string.IsNullOrWhiteSpace(Telefone))
-            erros += "> O campo Telefone é obrigatório!\n";
+            erros += "> O Telefone é obrigatório!\n";
 
-        else if (Telefone.Length < tamanhoMaximoTelefone || Telefone.Length > tamanhoMaximoTelefone) //(51) 98596-2346
+        else if (!Validador.VerificaSeEhNumero(Telefone))
+            erros += "> O Telefone deve conter apenas números\n";
+
+        else if (Telefone.Length < tamanhoMaximoTelefone || Telefone.Length > tamanhoMaximoTelefone) //(51) 99599-2244
             erros += "> O Telefone deve ter 11 caracteres no formato (XX)XXXXX-XXXX(SEM TRAÇO E ESPAÇO)\n";
 
         return erros;
