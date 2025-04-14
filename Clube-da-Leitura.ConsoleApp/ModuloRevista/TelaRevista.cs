@@ -45,7 +45,7 @@ class TelaRevista
 
                 case "5": return;
 
-                default: Notificador.ApresentarOpçaoInvalida(); break;
+                default: Notificador.ApresentarOpcaoInvalida(); break;
             }
         }
     }
@@ -184,25 +184,26 @@ class TelaRevista
             return;
         }
 
-        Console.WriteLine("╔═════╦═══════════════════════╦═════════════════╦══════════════════════╦═════════════════╗");
-        Console.WriteLine("║{0, -4} ║ {1,-21} ║ {2,-15} ║ {3,-20} ║ {4, -15} ║",
-                          "Id", "Título", "N° da Edição", "Ano de Publicação","Caixa");
-        Console.WriteLine("╠═════╬═══════════════════════╬═════════════════╬══════════════════════╬═════════════════╣");
+        Console.WriteLine("╔═════╦═══════════════════════╦═════════════════╦══════════════════════╦══════════════════════╦═════════════════╗");
+        Console.WriteLine("║{0, -4} ║ {1,-21} ║ {2,-15} ║ {3,-20} ║ {4, -20} ║ {5, -15} ║",
+                          "Id", "Título", "N° da Edição", "Ano de Publicação", "Status de Emprestimo", "Caixa");
+        Console.WriteLine("╠═════╬═══════════════════════╬═════════════════╬══════════════════════╬══════════════════════╬═════════════════╣");
 
         int contador = 0;
 
         foreach (var revista in revistas)
         {
             
-            Console.WriteLine("║{0, -4} ║ {1,-21} ║ {2,-15} ║ {3,-20} ║ {4, -15} ║",
-                revista.Id, revista.Titulo, revista.NumeroDaEdicao, revista.AnoDaPublicacao, revista.Caixa.Etiqueta);
+            Console.WriteLine("║{0, -4} ║ {1,-21} ║ {2,-15} ║ {3,-20} ║ {4, -20} ║ {5, -15} ║",
+                revista.Id, revista.Titulo, revista.NumeroDaEdicao, revista.AnoDaPublicacao, revista.StatusDeEmprestimo, revista.Caixa.Etiqueta);
             if (contador < revistas.Length - 1)
-                Console.WriteLine("╠═════╬═══════════════════════╬═════════════════╬══════════════════════╬═════════════════╣");
+                Console.WriteLine("╠═════╬═══════════════════════╬═════════════════╬══════════════════════╬══════════════╬══════════════════╣");
 
             contador++;
         }
-        Console.WriteLine("╚═════╩═══════════════════════╩═════════════════╩══════════════════════╩═════════════════╝");
-        Notificador.ApresentarMensagemParaSair();
+        Console.WriteLine("╚═════╩═══════════════════════╩═════════════════╩══════════════════════╩══════════════════════╩═════════════════╝");
+        if (exibirSair)
+            Notificador.ApresentarMensagemParaSair();
     }
 
     public Revista ObterDadosRevista(ref Caixa caixaSelecionada, bool criarIdNovo, int idExistente = 0)
