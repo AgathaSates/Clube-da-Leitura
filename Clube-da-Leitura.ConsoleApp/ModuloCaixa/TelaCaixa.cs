@@ -87,7 +87,7 @@ class TelaCaixa
         Console.WriteLine();
 
         Console.Write("> Digite o ID da caixa que deseja editar: ");
-        int id = Convert.ToInt32(Console.ReadLine().Trim());
+        int id = Validador.DigitouUmNumero();
 
         Caixa caixaExiste = repositorioCaixa.SelecionarPorId(id);
 
@@ -135,7 +135,7 @@ class TelaCaixa
         VisualizarTodasAsCaixas(false, false);
 
         Console.Write("> Digite o ID da caixa que deseja excluir: ");
-        int id = Convert.ToInt32(Console.ReadLine().Trim());
+        int id = Validador.DigitouUmNumero();
 
         Caixa caixa = repositorioCaixa.SelecionarPorId(id);
 
@@ -147,7 +147,14 @@ class TelaCaixa
             return;
         }
 
-        repositorioCaixa.Excluir(caixa.Id);
+
+        if (repositorioCaixa.Excluir(caixa.Id))
+        {
+            ColorirTexto.ExibirMensagem("(X) Não é possível excluir a caixa, pois ela possui revistas vinculadas.", ConsoleColor.Red);
+            Notificador.ApresentarMensagemParaSair();
+            return;
+        }    
+
         ColorirTexto.ExibirMensagem("(V) Caixa excluída com sucesso!", ConsoleColor.Green);
 
         Notificador.ApresentarMensagemParaSair();
