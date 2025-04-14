@@ -2,29 +2,28 @@
 
 class GeradorDeIDs
 {
-    public static int idAmigo = 0;
-    public static int idRevista = 0;
-    public static int idCaixa = 0;
-    public static int idEmprestimo = 0;
+    public static int IdAmigo = 0;
+    public static int IdRevista = 0;
+    public static int IdCaixa = 0;
+    public static int IdEmprestimo = 0;
 
     public static int GerarIdAmigo()
     {
-        return ++idAmigo;
+        return ++IdAmigo;
     }
 
     public static int GerarIdRevista()
     {
-        return ++idRevista;
+        return ++IdRevista;
     }
 
     public static int GerarIdCaixa()
     {
-        return ++idCaixa;
+        return ++IdCaixa;
     }
 
     public static int GerarIdEmprestimo()
     {
-        return ++idEmprestimo;
+        return ++IdEmprestimo;
     }
-
 }
