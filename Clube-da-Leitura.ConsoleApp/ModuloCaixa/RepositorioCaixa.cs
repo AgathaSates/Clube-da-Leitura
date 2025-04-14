@@ -35,19 +35,19 @@ class RepositorioCaixa
         return false;
     }
 
-    public string Excluir(int id)
+    public bool Excluir(int id)
     {
         for (int i = 0; i < caixas.Length; i++)
             if (caixas[i] != null)
                 if (caixas[i].Id == id)
                 {
-                    if (caixas[i].revistas[0] != null)  
-                        return "Não é possível excluir a caixa, pois ela possui revistas vinculadas.";
-                    
+                    if (caixas[i].revistas[0] != null)
+                        return true;
+
                     caixas[i] = null;
-                    indiceCaixa--;                    
+                    indiceCaixa--;
                 }
-        return "(V) Caixa excluída com sucesso!";
+        return false;
     }
 
     public Caixa[] SelecionarTodos()
