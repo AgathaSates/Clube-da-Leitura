@@ -5,7 +5,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 
 class RepositorioCaixa
 {
-    Caixa[] caixas = new Caixa[100];
+    Caixa[] Caixas = new Caixa[100];
     int indiceCaixa = 0;
 
     public string Inserir(Caixa caixa)
@@ -16,14 +16,14 @@ class RepositorioCaixa
         if (VerificaCaixaJaExiste(caixa))
             return "Caixa já cadastrada, não pode registrar etiquetas duplicadas.";
 
-        caixas[indiceCaixa++] = caixa;
+        Caixas[indiceCaixa++] = caixa;
         return "(V) Caixa cadastrada com sucesso!";
 
     }
 
     public bool Editar(int id, Caixa caixaEditada)
     {
-        foreach (Caixa caixa in caixas)
+        foreach (Caixa caixa in Caixas)
             if (caixa != null)
                 if (caixa.Id == id)
                 {
@@ -37,14 +37,14 @@ class RepositorioCaixa
 
     public bool Excluir(int id)
     {
-        for (int i = 0; i < caixas.Length; i++)
-            if (caixas[i] != null)
-                if (caixas[i].Id == id)
+        for (int i = 0; i < Caixas.Length; i++)
+            if (Caixas[i] != null)
+                if (Caixas[i].Id == id)
                 {
-                    if (caixas[i].revistas[0] != null)
+                    if (Caixas[i].revistas[0] != null)
                         return true;
 
-                    caixas[i] = null;
+                    Caixas[i] = null;
                     indiceCaixa--;
                 }
         return false;
@@ -54,14 +54,14 @@ class RepositorioCaixa
     {
         int contadorCaixasPreenchidas = 0;
 
-        foreach (Caixa caixa in caixas)
+        foreach (Caixa caixa in Caixas)
             if (caixa != null)
                 contadorCaixasPreenchidas++;
 
         Caixa[] caixasSelecionadas = new Caixa[contadorCaixasPreenchidas];
         int contador = 0;
 
-        foreach (Caixa caixa in caixas)
+        foreach (Caixa caixa in Caixas)
             if (caixa != null)
                 caixasSelecionadas[contador++] = caixa;
 
@@ -70,7 +70,7 @@ class RepositorioCaixa
 
     public Caixa SelecionarPorId(int id)
     {
-        foreach (Caixa caixa in caixas)
+        foreach (Caixa caixa in Caixas)
             if (caixa != null)
                 if (caixa.Id == id)
                     return caixa;
@@ -89,7 +89,7 @@ class RepositorioCaixa
     public bool VerificaCaixaJaExiste(Caixa caixa)
     {
         bool jaExiste = false;
-        foreach (Caixa caixaExistente in caixas)
+        foreach (Caixa caixaExistente in Caixas)
             if (caixaExistente != null)
                 if (caixa.Etiqueta == caixaExistente.Etiqueta)
                     jaExiste = true;
@@ -99,9 +99,8 @@ class RepositorioCaixa
 
     public bool VerificarLimiteCaixas()
     {
-        if (indiceCaixa == caixas.Length)
+        if (indiceCaixa == Caixas.Length)
             return true;
         return false;
     }
-
 }
