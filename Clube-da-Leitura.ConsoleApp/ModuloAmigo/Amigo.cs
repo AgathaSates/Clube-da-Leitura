@@ -9,7 +9,7 @@ class Amigo
     public string Nome;
     public string NomeResponsavel;
     public string Telefone;
-    public Emprestimo Emprestimo;
+    public Emprestimo[] Emprestimos = new Emprestimo[100];
 
     public Amigo(string nome, string responsavel, string telefone)
     {
@@ -33,14 +33,15 @@ class Amigo
         int tamanhoMinimoNome = 3;
         int tamanhoMaximoTelefone = 11;
         string erros = "";
+
         if (string.IsNullOrWhiteSpace(Nome))
-            erros+= "> O Nome é obrigatório!\n";
+            erros += "> O Nome é obrigatório!\n";
 
         else if (Nome.Length < tamanhoMinimoNome || Nome.Length > tamanhoMaximoNome)
-            erros+= "> O Nome deve ter entre 3 e 100 caracteres\n";
+            erros += "> O Nome deve ter entre 3 e 100 caracteres\n";
 
         if (string.IsNullOrWhiteSpace(NomeResponsavel))
-            erros+= "> O Nome Responsável é obrigatório!\n";
+            erros += "> O Nome Responsável é obrigatório!\n";
 
         else if (NomeResponsavel.Length < tamanhoMinimoNome || NomeResponsavel.Length > tamanhoMaximoNome)
             erros += "> O Nome Responsável deve ter entre 3 e 100 caracteres\n";
@@ -57,8 +58,39 @@ class Amigo
         return erros;
     }
 
-    public Emprestimo ObterEmprestimo() 
+    public Emprestimo[] ObterEmprestimos()
     {
-        return Emprestimo;
+        int contadorEmprestimosPreenchidos = 0;
+        foreach (Emprestimo emprestimo in Emprestimos)
+            if (emprestimo != null)
+                contadorEmprestimosPreenchidos++;
+        Emprestimo[] emprestimosSelecionados = new Emprestimo[contadorEmprestimosPreenchidos];
+        int contador = 0;
+
+        foreach (Emprestimo emprestimo in Emprestimos)
+            if (emprestimo != null)
+                emprestimosSelecionados[contador++] = emprestimo;
+
+        return emprestimosSelecionados;
+    }
+
+    public void AdicionarEmprestimo(Emprestimo emprestimo)
+    {
+        for (int i = 0; i < Emprestimos.Length; i++)
+            if (Emprestimos[i] == null)
+            {
+                Emprestimos[i] = emprestimo;
+                break;
+            }
+    }
+
+    public bool VerificaEmprestimoAtivo()
+    {
+        foreach (Emprestimo emprestimo in Emprestimos)
+            if (emprestimo != null)
+                if (emprestimo.StatusDeEmprestimo != "Concluído")
+                    return true;
+
+        return false;
     }
 }
