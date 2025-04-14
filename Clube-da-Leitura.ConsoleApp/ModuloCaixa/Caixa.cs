@@ -87,7 +87,5 @@ class Caixa
                 revistas[i] = null;
                 break;
             }
-    }
-
-
+    } 
 }
