@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using Clube_da_Leitura.ConsoleApp.Compartilhado;
-using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
+using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
@@ -39,13 +39,13 @@ class TelaAmigo
 
                 case "3": ExcluirAmigo(); break;
 
-                case "4": VisualizarTodosOsAmigos(true,true); break;
+                case "4": VisualizarTodosOsAmigos(true, true); break;
 
                 case "5": VisualizarEmprestimos(); break;
 
                 case "6": return;
 
-                default: Notificador.ApresentarOpçaoInvalida(); break;
+                default: Notificador.ApresentarOpcaoInvalida(); break;
             }
         }
     }
@@ -165,7 +165,7 @@ class TelaAmigo
             Console.WriteLine("╚═════════════════════════════════════════╝");
             Console.WriteLine();
         }
-  
+
         Amigo[] amigos = repositorioAmigo.SelecionarTodos();
 
         if (amigos.Length == 0)
@@ -194,7 +194,7 @@ class TelaAmigo
 
                 contador++;
 
-            }              
+            }
 
         Console.WriteLine("╚═════╩════════════╩═════════════════╩═══════════════╝");
 
@@ -202,9 +202,74 @@ class TelaAmigo
             Notificador.ApresentarMensagemParaSair();
     }
 
-    public void VisualizarEmprestimos() // finalizar após o modulo emprestimo
+    public void VisualizarEmprestimos()
     {
-        throw new NotImplementedException();
+        Console.Clear();
+        Console.WriteLine("╔═════════════════════════════════════════╗");
+        Console.WriteLine("║ Visualizando Empréstimos dos Amigos     ║");
+        Console.WriteLine("╚═════════════════════════════════════════╝");
+        Console.WriteLine();
+        VisualizarTodosOsAmigos(false, false);
+        Console.WriteLine();
+        Console.Write("> Digite o ID do amigo que deseja ver os empréstimos: ");
+        int id = Validador.DigitouUmNumero();
+
+        Amigo amigo = repositorioAmigo.SelecionarPorId(id);
+        if (amigo == null)
+        {
+            ColorirTexto.ExibirMensagem("(X) Amigo não encontrado!", ConsoleColor.Red);
+            Notificador.ApresentarMensagemTenteNovamente();
+            VisualizarEmprestimos();
+            return;
+        }
+
+        Emprestimo[] emprestimos = repositorioAmigo.VisualizarEmprestimos(amigo);
+
+        if (emprestimos.Length == 0)
+        {
+            ColorirTexto.ExibirMensagem("(X) Nenhum empréstimo encontrado!", ConsoleColor.Red);
+            Notificador.ApresentarMensagemParaSair();
+            return;
+        }
+
+        Console.WriteLine("=========================================");
+        Console.WriteLine($" Emprestimos de {amigo.Nome}");
+        Console.WriteLine("=========================================");
+
+
+        foreach (Emprestimo emprestimo in emprestimos)
+            if (emprestimo != null)
+            {
+                if (emprestimo.EmprestimoEstaAtrasado(emprestimo))
+                    emprestimo.RegistrarAtraso();
+
+                if (emprestimo.StatusDeEmprestimo == "Atrasado")
+                {
+                    Console.WriteLine("----------------------------------------------------------------------------------");
+                    Console.WriteLine($"Id: {emprestimo.Id}");
+                    Console.WriteLine($"Revista: {emprestimo.revista.Titulo}");
+                    Console.WriteLine($"Data do Empréstimo: {emprestimo.DataIniciodoEmprestimo}");
+                    Console.WriteLine($"Data de Devolução: {emprestimo.DataDevolucao}");
+                    ColorirTexto.ExibirMensagem($"Status do Empréstimo: {emprestimo.StatusDeEmprestimo}",ConsoleColor.Red);
+                    Console.WriteLine("----------------------------------------------------------------------------------");
+
+                }
+
+                else
+                {
+                    Console.WriteLine("----------------------------------------------------------------------------------");
+                    Console.WriteLine($"Id: {emprestimo.Id}");
+                    Console.WriteLine($"Revista: {emprestimo.revista.Titulo}");
+                    Console.WriteLine($"Data do Empréstimo: {emprestimo.DataIniciodoEmprestimo}");
+                    Console.WriteLine($"Data de Devolução: {emprestimo.ObterDataDeDevolucao()}");
+                    ColorirTexto.ExibirMensagem($"Status do Empréstimo: {emprestimo.StatusDeEmprestimo}", ConsoleColor.Green);
+                    Console.WriteLine("----------------------------------------------------------------------------------");
+
+                }
+
+            }
+
+        Notificador.ApresentarMensagemParaSair();
     }
 
     public Amigo ObterDadosAmigo(bool criarIdNovo, int idExistente = 0)
@@ -220,9 +285,9 @@ class TelaAmigo
         Console.Write("> Digite o Telefone do Responsável ( 11 digitos (XX)XXXXX-XXXX): ");
         string telefone = Console.ReadLine().Trim();
 
-        if (criarIdNovo)            
+        if (criarIdNovo)
             return new Amigo(nome, nomeResponsavel, telefone);
-        
+
         return new Amigo(idExistente, nome, nomeResponsavel, telefone);
     }
 
