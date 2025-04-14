@@ -15,4 +15,6 @@ class ColorirTexto
         Console.WriteLine(mensagem);
         Console.ResetColor();
     }
+
+
 }
