@@ -1,146 +1,119 @@
-﻿namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
+﻿using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
+
+namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
 class RepositorioAmigo
 {
-    public Amigo[] amigos = new Amigo[5];
+    public Amigo[] Amigos = new Amigo[100];
     public int contadorAmigo = 0;
 
     public string Inserir(Amigo novoAmigo)
     {
         if (VerificarLimiteAmigos())
             return "Limite de amigos atingido.";
-        
 
-        else if (VerificaAmigoJaExiste(novoAmigo)) 
-            return"Amigo já cadastrado.";
+        if (VerificaAmigoJaExiste(novoAmigo))
+            return "Amigo já cadastrado.";
 
-        else
-        {           
-            amigos[contadorAmigo++] = novoAmigo;
-            return "(V) Amigo cadastrado com sucesso!";
-        }          
+        Amigos[contadorAmigo++] = novoAmigo;
+        return "(V) Amigo cadastrado com sucesso!";
     }
 
-
-    public bool Editar(int Id, Amigo novoamigo)
+    public bool Editar(int id, Amigo novoAmigo)
     {
-        foreach (Amigo amigo in amigos)
-        {
+        foreach (Amigo amigo in Amigos)
             if (amigo != null)
-            {
-                if (amigo.Id == Id)
+                if (amigo.Id == id)
                 {
-                    amigo.Nome = novoamigo.Nome;
-                    amigo.NomeResponsavel = novoamigo.NomeResponsavel;
-                    amigo.Telefone = novoamigo.Telefone;
-                    
+                    amigo.Nome = novoAmigo.Nome;
+                    amigo.NomeResponsavel = novoAmigo.NomeResponsavel;
+                    amigo.Telefone = novoAmigo.Telefone;
+
                     return true;
                 }
-            }
-        }
+
         return false;
     }
 
-    public void Excluir(int Id)           //● Não permitir excluir um amigo caso tenha empréstimos vinculados(status pendente)
+    public bool Excluir(int id)        
     {
-        for (int i = 0; i < amigos.Length; i++)
-        {
-            if (amigos[i] != null)
-            {
-                if (amigos[i].Id == Id)
+        foreach (Amigo amigo in Amigos)
+            if (amigo != null)
+                if (amigo.Id == id)
                 {
-                    amigos[i] = null;
+                    if (amigo.VerificaEmprestimoAtivo())
+                        return false;
+
+                    Amigos[id] = null;
                     contadorAmigo--;
-                    break;
+                    return true;
                 }
-            }
-        }
+        return false;
     }
 
     public Amigo[] SelecionarTodos()
     {
-        int contadoramigosPreenchidos = 0;
+        int contadorAmigosPreenchidos = 0;
 
-        foreach (Amigo amigo in amigos) 
-        {
+        foreach (Amigo amigo in Amigos)
             if (amigo != null)
-                contadoramigosPreenchidos++;
-        }
+                contadorAmigosPreenchidos++;
 
-        Amigo[] amigosSelecionados = new Amigo[contadoramigosPreenchidos];
+        Amigo[] amigosSelecionados = new Amigo[contadorAmigosPreenchidos];
 
         int contador = 0;
 
-        foreach (Amigo amigo in amigos)
-        {  
+        foreach (Amigo amigo in Amigos)
             if (amigo != null)
-            {
-                amigosSelecionados[contador] = amigo;
-                contador++;
-            }                      
-        }
+                amigosSelecionados[contador++] = amigo;
+                
 
         return amigosSelecionados;
     }
 
-    public Amigo SelecionarPorId(int Id)
+    public Amigo SelecionarPorId(int id)
     {
-        foreach (Amigo amigo in amigos)
-        {
-            if (amigo.Id == Id)
-                return amigo;
-        }
+        foreach (Amigo amigo in Amigos)
+            if (amigo != null)
+                if (amigo.Id == id)
+                    return amigo;
+
         return null;
     }
 
-    //public Emprestimo[] VisualizarEmprestimos(int Id) // terminar para exibir todos os emprstimos(.status))
-    //{
-    //    foreach (Amigo amigo in amigos)
-    //    {
-    //        if (amigo.Id == Id)
-    //        {
-    //            Console.WriteLine($"Nome: {amigo.Nome}");
-    //            Console.WriteLine($"Nome Responsável: {amigo.NomeResponsavel}");
-    //            Console.WriteLine($"Telefone: {amigo.Telefone}");
-    //            Console.WriteLine($"Emprestimo: {amigo.Emprestimo.status}"); // adicionar qual revista e titulo
-    //        }
-    //    }
-    //}
-
-    public bool VerificaAmigoJaExiste(Amigo novoAmigo)
+    public Emprestimo[] VisualizarEmprestimos(Amigo amigo)
     {
-        bool jaExiste = false;
-        foreach (Amigo amigo in amigos)
-        {
-            if (amigo != null)
-            {
-                if (amigo.Nome == novoAmigo.Nome && amigo.Telefone == novoAmigo.Telefone)
-                {
-                    jaExiste = true;
-                } 
-            }
-        }
-        return jaExiste;
-    }
+        int contadorEmprestimosPreenchidos = 0;
+        foreach (Emprestimo emprestimo in amigo.Emprestimos)
+            if (emprestimo != null)
+                contadorEmprestimosPreenchidos++;
 
-    //● Não permitir excluir um amigo caso tenha empréstimos vinculados em aberto
-    public bool VerificaEmprestimoExistente(int Id)
-    {
-        foreach (Amigo amigo in amigos)
-        {
-            if (amigo != null)
-            {
-                if (amigo.Id == Id && amigo.Emprestimo != null) // finalizas apos o modulo emprestimo
-                    return true;
-            }
-        }
-        return false;
+        Emprestimo[] emprestimosSelecionados = new Emprestimo[contadorEmprestimosPreenchidos];
+
+        int contador = 0;
+        foreach (Emprestimo emprestimo in amigo.Emprestimos)
+            if (emprestimo != null)
+                emprestimosSelecionados[contador++] = emprestimo;
+
+        return emprestimosSelecionados;
     }
 
     public bool VerificarLimiteAmigos()
     {
-        if (contadorAmigo == amigos.Length)          
-            return true;      
+        if (contadorAmigo == Amigos.Length)
+            return true;
         return false;
+    }
+
+    public bool VerificaAmigoJaExiste(Amigo novoAmigo)
+    {
+        bool jaExiste = false;
+        foreach (Amigo amigo in Amigos)
+            if (amigo != null)
+                if (amigo.Nome == novoAmigo.Nome && amigo.Telefone == novoAmigo.Telefone)
+                    jaExiste = true;
+        
+
+        return jaExiste;
     }
 }
