@@ -2,7 +2,7 @@
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 class RepositorioRevista
 {
-    public Revista[] revistas = new Revista[100];
+    public Revista[] Revistas = new Revista[100];
     public int contadorRevista = 0;
 
     public string Inserir(Revista novaRevista)
@@ -13,13 +13,13 @@ class RepositorioRevista
         if (VerificaRevistaJaExiste(novaRevista))
             return "Revista já cadastrada.";
 
-        revistas[contadorRevista++] = novaRevista;
+        Revistas[contadorRevista++] = novaRevista;
         return "(V) Revista cadastrada com sucesso!";
     }
 
     public bool Editar(int id, Revista revistaEditada)
     {
-        foreach (Revista revista in revistas)
+        foreach (Revista revista in Revistas)
             if (revista != null)
                 if (revista.Id == id)
                 {
@@ -36,11 +36,11 @@ class RepositorioRevista
 
     public void Excluir(int id)
     {
-        for (int i = 0; i < revistas.Length; i++)
-            if (revistas[i] != null)
-                if (revistas[i].Id == id)
+        for (int i = 0; i < Revistas.Length; i++)
+            if (Revistas[i] != null)
+                if (Revistas[i].Id == id)
                 {
-                    revistas[i] = null;
+                    Revistas[i] = null;
                     contadorRevista--;
                     break;
                 }
@@ -51,26 +51,23 @@ class RepositorioRevista
     {
         int contadorRevistasPreenhidos = 0;
 
-        foreach (Revista revista in revistas)
+        foreach (Revista revista in Revistas)
             if (revista != null)
                 contadorRevistasPreenhidos++;
 
         Revista[] revistasSelecionadas = new Revista[contadorRevistasPreenhidos];
         int contador = 0;
 
-        foreach (Revista revista in revistas)
+        foreach (Revista revista in Revistas)
             if (revista != null)
-            {
-                revistasSelecionadas[contador] = revista;
-                contador++;
-            }
+                revistasSelecionadas[contador++] = revista;
 
         return revistasSelecionadas;
     }
 
     public Revista SelecionarPorId(int id)
     {
-        foreach (Revista revista in revistas)
+        foreach (Revista revista in Revistas)
             if (revista != null)
                 if (revista.Id == id)
                     return revista;
@@ -80,7 +77,7 @@ class RepositorioRevista
 
     public bool VerificarLimiteRevistas()
     {
-        if (contadorRevista == revistas.Length)
+        if (contadorRevista == Revistas.Length)
             return true;
         return false;
     }
@@ -89,7 +86,7 @@ class RepositorioRevista
     {
         bool jaExiste = false;
 
-        foreach (Revista revista in revistas)
+        foreach (Revista revista in Revistas)
             if (revista != null)
                 if (revista.Titulo == novaRevista.Titulo && revista.NumeroDaEdicao == novaRevista.NumeroDaEdicao)
                     jaExiste = true;
