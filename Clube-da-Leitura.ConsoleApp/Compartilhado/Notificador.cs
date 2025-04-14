@@ -2,21 +2,21 @@
 
 class Notificador
 {
-    public static void ApresentarOpçaoInvalida()
+    public static void ApresentarOpcaoInvalida()
     {
-        ColorirTexto.ExibirMensagemSemLinha("(X) Opção inválida! Pressione enter para tentar novamente.", ConsoleColor.Red);
+        ColorirTexto.ExibirMensagemSemLinha("(X) Opção inválida! Pressione Enter para tentar novamente.", ConsoleColor.Red);
         Console.ReadKey();
     }
 
     public static void ApresentarMensagemTenteNovamente()
     {
-        ColorirTexto.ExibirMensagemSemLinha(">Pessione Enter para tentar novamente.", ConsoleColor.Yellow);
+        ColorirTexto.ExibirMensagemSemLinha("> Pessione Enter para tentar novamente.", ConsoleColor.Yellow);
         Console.ReadKey();
     }
 
     public static void ApresentarMensagemParaSair()
     {
-        ColorirTexto.ExibirMensagemSemLinha(">Pessione Enter para Sair.", ConsoleColor.Yellow);
+        ColorirTexto.ExibirMensagemSemLinha("> Pessione Enter para Sair.", ConsoleColor.Yellow);
         Console.ReadKey();
     }
 }
