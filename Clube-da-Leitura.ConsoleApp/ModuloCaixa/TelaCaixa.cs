@@ -43,7 +43,7 @@ class TelaCaixa
 
                 case "5": return;
 
-                default: Notificador.ApresentarOpçaoInvalida(); break;
+                default: Notificador.ApresentarOpcaoInvalida(); break;
             }
         }
     }
