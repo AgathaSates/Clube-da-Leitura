@@ -1,4 +1,6 @@
 ﻿
+using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
+
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 class RepositorioRevista
 {
@@ -8,13 +10,14 @@ class RepositorioRevista
     public string Inserir(Revista novaRevista)
     {
         if (VerificarLimiteRevistas())
-            return "Limite de revistas atingido.";
+            return ">> (X) Limite de revistas atingido.";
 
         if (VerificaRevistaJaExiste(novaRevista))
-            return "Revista já cadastrada.";
+            return ">> (X) Revista já cadastrada.";
 
         Revistas[contadorRevista++] = novaRevista;
-        return "(V) Revista cadastrada com sucesso!";
+        novaRevista.Caixa.AdicionarRevista(novaRevista);
+        return ">> (V) Revista cadastrada com sucesso!";
     }
 
     public bool Editar(int id, Revista revistaEditada)
@@ -23,28 +26,35 @@ class RepositorioRevista
             if (revista != null)
                 if (revista.Id == id)
                 {
+                    revista.Caixa.RemoverRevista(revista);
+
                     revista.Titulo = revistaEditada.Titulo;
                     revista.NumeroDaEdicao = revistaEditada.NumeroDaEdicao;
                     revista.AnoDaPublicacao = revistaEditada.AnoDaPublicacao;
                     revista.Caixa = revistaEditada.Caixa;
 
+                    revista.Caixa.AdicionarRevista(revistaEditada);
                     return true;
                 }
 
         return false;
     }
 
-    public void Excluir(int id)
+    public bool Excluir(int id)
     {
         for (int i = 0; i < Revistas.Length; i++)
             if (Revistas[i] != null)
                 if (Revistas[i].Id == id)
                 {
+                    if (Revistas[i].StatusDeEmprestimo == "Emprestada")
+                        return false;
+                    Revistas[i].Caixa.RemoverRevista(Revistas[i]);
                     Revistas[i] = null;
                     contadorRevista--;
-                    break;
+                 
+                    return true;
                 }
-
+        return false;
     }
 
     public Revista[] SelecionarTodos()

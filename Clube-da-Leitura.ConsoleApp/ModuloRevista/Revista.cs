@@ -8,7 +8,7 @@ class Revista
     public string Titulo;
     public int NumeroDaEdicao;
     public int AnoDaPublicacao;
-    public string StatusDeEmprestimo;
+    public string StatusDeEmprestimo; //Disponível / Emprestada / Reservada
     public Caixa Caixa;
 
     public Revista(string titulo, int numeroDaEdicao, int anoDaPublicacao, Caixa caixa)
