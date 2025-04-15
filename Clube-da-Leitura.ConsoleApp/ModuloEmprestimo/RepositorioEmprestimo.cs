@@ -7,8 +7,6 @@ class RepositorioEmprestimo
     public Emprestimo[] emprestimos = new Emprestimo[100];
     public int contadorEmprestimos = 0;
 
-    //Inserir( ), Editar( ), Excluir( ), SelecionarTodos(),SelecionarPorId(), VerificaAmigoTemEmprestimoAtivo()
-
     public string Inserir(Emprestimo novoEmprestimo)
     {
         if (VerificarLimiteEmprestimos())
@@ -32,6 +30,8 @@ class RepositorioEmprestimo
             if (emprestimo != null)
                 if (emprestimo.Id == id)
                 {
+                    if (emprestimo.amigo.VerificaEmprestimoAtivo())
+                        return false;
                     emprestimo.amigo = novoEmprestimo.amigo;
                     emprestimo.revista = novoEmprestimo.revista;
                     emprestimo.DataIniciodoEmprestimo = novoEmprestimo.DataIniciodoEmprestimo;
@@ -90,9 +90,7 @@ class RepositorioEmprestimo
 
     public bool VerificaAmigoTemEmprestimoAtivo(Amigo amigo)
     {
-        if (amigo.VerificaEmprestimoAtivo())
-            return true;
-        return false;
+        return amigo.VerificaEmprestimoAtivo();
     }
 
     public bool VerificaRevistaJaEmprestada(Revista revista)

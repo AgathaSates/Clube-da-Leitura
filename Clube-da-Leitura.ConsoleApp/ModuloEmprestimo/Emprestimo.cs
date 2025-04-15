@@ -22,6 +22,14 @@ class Emprestimo
 
     }
 
+    public Emprestimo(int id,Amigo amigo, Revista revista, DateTime dataEmprestimo)
+    {
+        Id = id;
+        this.amigo = amigo;
+        this.revista = revista;
+        DataIniciodoEmprestimo = dataEmprestimo;
+        DataDevolucao = ObterDataDeDevolucao();
+    }
     public string Validar()
     {
         string erros = "";
@@ -46,11 +54,15 @@ class Emprestimo
     public bool EmprestimoEstaAtrasado(Emprestimo emprestimo)
     {
         if (emprestimo.DataDevolucao < DateTime.Now)
+        {
+            emprestimo.RegistrarAtraso();
             return true;
+        }
+
         return false;
     }
 
-    public void RegistrarDevolucao()
+    public void RegistrarDevolucao(Revista revista)
     {
         StatusDeEmprestimo = "Concluído";
         revista.Devolver();
