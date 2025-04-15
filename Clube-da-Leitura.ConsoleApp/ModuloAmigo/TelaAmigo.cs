@@ -95,13 +95,14 @@ class TelaAmigo
         ColorirTexto.ExibirMensagemSemLinha("> Digite o ID do amigo que deseja editar: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NaoEncontrouAmigo(id, true,false))
+        if (NaoEncontrouAmigo(id))
             return;
 
         Amigo amigoEditado = ObterDadosAmigo(false, id);
 
         if (NaoConseguiuValidarAmigo(amigoEditado))
             EditarAmigo();
+
 
         bool editou = repositorioAmigo.Editar(id, amigoEditado);
 
@@ -134,7 +135,7 @@ class TelaAmigo
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja excluir: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NaoEncontrouAmigo(id,false,true))
+        if (NaoEncontrouAmigo(id))
             return;
 
         bool excluiu = repositorioAmigo.Excluir(id);
@@ -207,8 +208,10 @@ class TelaAmigo
         VisualizarTodosOsAmigos(false, false);
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja visualizar os empréstimos: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
-        if (NaoEncontrouAmigo(id, false, false))
+
+        if (NaoEncontrouAmigo(id))
             return;
+
         if (AmigoTemEmprestimos(id))
             return;
 
@@ -280,17 +283,13 @@ class TelaAmigo
         return true;
     }
 
-    public bool NaoEncontrouAmigo(int id, bool ehEditar, bool ehExcluir)
+    public bool NaoEncontrouAmigo(int id)
     {
         if (repositorioAmigo.SelecionarPorId(id) == null)
         {
             ColorirTexto.ExibirMensagem("(X) Amigo não encontrado!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemTenteNovamente();
-            if (ehEditar)
-                EditarAmigo();
-
-            if (ehExcluir)
-                ExcluirAmigo();
+            Notificador.ApresentarMensagemParaSair();
+            return true;
         }
         return false;
     }
@@ -300,7 +299,7 @@ class TelaAmigo
         if (novoAmigo.Validar() != "")
         {
             ApresentarDadosInvalidos(novoAmigo);   
-               return true;
+            return true;
         }
         return false;
     }
