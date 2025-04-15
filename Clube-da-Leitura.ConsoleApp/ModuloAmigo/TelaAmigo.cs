@@ -60,18 +60,23 @@ class TelaAmigo
 
         Amigo novoAmigo = ObterDadosAmigo(true);
 
-        if (NaoConseguiuValidarAmigo(novoAmigo, false))
-            return;
+        if (NaoConseguiuValidarAmigo(novoAmigo))
+            InserirAmigo();
 
         string mensagemResultado = repositorioAmigo.Inserir(novoAmigo);
 
         if (mensagemResultado == ">> (V) Amigo cadastrado com sucesso!")
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
 
         else
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
-
-        Notificador.ApresentarMensagemParaSair();
+            Notificador.ApresentarMensagemParaSair();
+        }
+        
     }
 
     public void EditarAmigo()
@@ -95,8 +100,8 @@ class TelaAmigo
 
         Amigo amigoEditado = ObterDadosAmigo(false, id);
 
-        if (NaoConseguiuValidarAmigo(amigoEditado, true))
-            return;
+        if (NaoConseguiuValidarAmigo(amigoEditado))
+            EditarAmigo();
 
         bool editou = repositorioAmigo.Editar(id, amigoEditado);
 
@@ -104,11 +109,13 @@ class TelaAmigo
         {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar o amigo!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return;
         }
 
-        ColorirTexto.ExibirMensagem(">> (V) Amigo editado com sucesso!", ConsoleColor.Green);
-        Notificador.ApresentarMensagemParaSair();
+        else
+        {
+            ColorirTexto.ExibirMensagem(">> (V) Amigo editado com sucesso!", ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void ExcluirAmigo()
@@ -194,39 +201,28 @@ class TelaAmigo
         ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
 
-        ////if (ExisteAmigos())
-        ////    return;
+        if (!ExisteAmigos())
+            return;
 
-        ////VisualizarTodosOsAmigos(false, false);
+        VisualizarTodosOsAmigos(false, false);
 
-        ////ColorirTexto.ExibirMensagemSemLinha("> Digite o ID do amigo que deseja ver os empréstimos: ", ConsoleColor.Yellow);
-        ////int id = Validador.DigitouUmNumero();
+        ColorirTexto.ExibirMensagemSemLinha("> Digite o ID do amigo que deseja ver os empréstimos: ", ConsoleColor.Yellow);
+        int id = Validador.DigitouUmNumero();
 
-        ////if (EncontrouAmigo(id))
-        ////    return;
+        if (NaoEncontrouAmigo(id, false, false))
+            return;
 
-        
-        ////if (AmigoTemEmprestimos(id))
-        ////    return;
 
-        //Console.WriteLine("╔═════════════════════════════════════════╗");
-        //Console.WriteLine($"║ Emprestimos de {repositorioAmigo.SelecionarPorId(id).Nome}║");
-        //Console.WriteLine("╚═════════════════════════════════════════╝");
+        if (AmigoTemEmprestimos(id))
+            return;
 
-        //Emprestimo[] emprestimos = repositorioAmigo.VisualizarEmprestimos(id);
+        Console.WriteLine("╔═════════════════════════════════════════╗");
+        Console.WriteLine($"║ Emprestimos de {repositorioAmigo.SelecionarPorId(id).Nome}║");
+        Console.WriteLine("╚═════════════════════════════════════════╝");
 
-        //foreach (Emprestimo emprestimo in emprestimos)
-        //    if (emprestimo != null)
-        //    {
-        //        if (emprestimo.EmprestimoEstaAtrasado(emprestimo))
-        //            emprestimo.RegistrarAtraso();
-
-        //        Console.WriteLine("╔═════╦════════════╦═════════════════╦═══════════════╗");
-
-        //    }
 
         Notificador.ApresentarMensagemParaSair();
-    } // terminar após o empréstimo
+    } 
 
     public Amigo ObterDadosAmigo(bool criarIdNovo, int idExistente = 0)
     {
@@ -288,21 +284,12 @@ class TelaAmigo
         return false;
     }
 
-    public bool NaoConseguiuValidarAmigo(Amigo novoAmigo, bool ehEditar)
+    public bool NaoConseguiuValidarAmigo(Amigo novoAmigo)
     {
         if (novoAmigo.Validar() != "")
         {
-            ApresentarDadosInvalidos(novoAmigo);
-
-            if (ehEditar)
-            {
-                EditarAmigo();
-                return true;
-            }
-
-            InserirAmigo();
-
-            return true;
+            ApresentarDadosInvalidos(novoAmigo);   
+               return true;
         }
         return false;
     }

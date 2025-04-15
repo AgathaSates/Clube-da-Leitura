@@ -64,18 +64,23 @@ class TelaRevista
 
         Revista novaRevista = ObterDadosRevista(true);
 
-        if (NaoConseguiuValidarRevista(novaRevista, false))
-            return;
+        if (NaoConseguiuValidarRevista(novaRevista))
+            InserirRevista();
 
         string mensagemResultado = repositorioRevista.Inserir(novaRevista);
 
         if (mensagemResultado == ">> (V) Revista cadastrada com sucesso!")
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
 
         else
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
-
-        Notificador.ApresentarMensagemParaSair();
+            Notificador.ApresentarMensagemParaSair();
+        }
+ 
     }
 
     public void EditarRevista()
@@ -99,8 +104,9 @@ class TelaRevista
 
         Revista revistaEditada = ObterDadosRevista(false, id);
 
-        if (NaoConseguiuValidarRevista(revistaEditada, true))
-            return;
+        if (NaoConseguiuValidarRevista(revistaEditada))
+            EditarRevista();
+
 
         bool editou = repositorioRevista.Editar(id, revistaEditada);
 
@@ -108,12 +114,13 @@ class TelaRevista
         {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar a revista!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-
-            return;
         }
 
-        ColorirTexto.ExibirMensagem(">> (V) Revista editada com sucesso!", ConsoleColor.Green);
-        Notificador.ApresentarMensagemParaSair();
+        else
+        {
+            ColorirTexto.ExibirMensagem(">> (V) Revista editada com sucesso!", ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void ExcluirRevista()
@@ -142,15 +149,17 @@ class TelaRevista
         {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível excluir a revista, pois ela está emprestada!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return;
         }
 
-        ColorirTexto.ExibirMensagem("(V) Revista excluída com sucesso!", ConsoleColor.Green);
-        Notificador.ApresentarMensagemParaSair();
+        else
+        {
+            ColorirTexto.ExibirMensagem("(V) Revista excluída com sucesso!", ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void VisualizarTodasAsRevistas(bool exibirTitulo, bool exibirSair)
-    { 
+    {
         if (exibirTitulo)
         {
             Console.Clear();
@@ -250,19 +259,11 @@ class TelaRevista
         return true;
     }
 
-    public bool NaoConseguiuValidarRevista(Revista novaRevista, bool ehEditar)
+    public bool NaoConseguiuValidarRevista(Revista novaRevista)
     {
         if (novaRevista.Validar() != "")
         {
             ApresentarDadosInvalidos(novaRevista);
-            if (ehEditar)
-            {
-                EditarRevista();
-                return true;
-            }
-
-            InserirRevista();
-
             return true;
         }
         return false;

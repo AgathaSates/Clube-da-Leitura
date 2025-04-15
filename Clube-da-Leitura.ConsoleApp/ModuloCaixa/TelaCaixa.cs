@@ -56,18 +56,22 @@ class TelaCaixa
 
         Caixa novaCaixa = ObterDadosCaixa(true);
 
-        if (NaoConseguiuValidarCaixa(novaCaixa, false))
-            return;
+        if (NaoConseguiuValidarCaixa(novaCaixa))
+            InserirCaixa();
 
         string mensagemResultado = repositorioCaixa.Inserir(novaCaixa);
 
         if (mensagemResultado == ">> (V) Caixa cadastrada com sucesso!")
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
 
         else
+        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
-
-        Notificador.ApresentarMensagemParaSair();
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void EditarCaixa()
@@ -91,8 +95,8 @@ class TelaCaixa
 
         Caixa caixaEditada = ObterDadosCaixa(false, id);
 
-        if (NaoConseguiuValidarCaixa(caixaEditada, true))
-            return;
+        if (NaoConseguiuValidarCaixa(caixaEditada))
+            EditarCaixa();
 
         bool editou = repositorioCaixa.Editar(id, caixaEditada);
 
@@ -100,11 +104,13 @@ class TelaCaixa
         {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar a caixa!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return;
         }
 
-        ColorirTexto.ExibirMensagem(">> (V) Caixa editada com sucesso!", ConsoleColor.Green);
-        Notificador.ApresentarMensagemParaSair();
+        else
+        {
+            ColorirTexto.ExibirMensagem(">> (V) Caixa editada com sucesso!", ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void ExcluirCaixa()
@@ -132,13 +138,13 @@ class TelaCaixa
         {
             ColorirTexto.ExibirMensagem(">> (X) Não é possível excluir a caixa, pois ela possui revistas vinculadas.", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return;
         }
 
-        ColorirTexto.ExibirMensagem(">> (V) Caixa excluída com sucesso!", ConsoleColor.Green);
-
-        Notificador.ApresentarMensagemParaSair();
-
+        else
+        {
+            ColorirTexto.ExibirMensagem(">> (V) Caixa excluída com sucesso!", ConsoleColor.Green);
+            Notificador.ApresentarMensagemParaSair();
+        }
     }
 
     public void VisualizarTodasAsCaixas(bool exibirTitulo, bool exibirSair)
@@ -235,21 +241,13 @@ class TelaCaixa
         return false;
     }
 
-    public bool NaoConseguiuValidarCaixa(Caixa novaCaixa, bool ehEditar)
+    public bool NaoConseguiuValidarCaixa(Caixa novaCaixa)
     {
         if (novaCaixa.Validar() != "")
         {
             ApresentarDadosInvalidos(novaCaixa);
-
-            if (ehEditar)
-            {
-                EditarCaixa();
-                return true;
-            }
-
-            InserirCaixa();
-
             return true;
+
         }
         return false;
     }
