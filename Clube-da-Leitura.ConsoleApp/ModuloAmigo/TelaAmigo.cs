@@ -205,21 +205,32 @@ class TelaAmigo
             return;
 
         VisualizarTodosOsAmigos(false, false);
-
-        ColorirTexto.ExibirMensagemSemLinha("> Digite o ID do amigo que deseja ver os empréstimos: ", ConsoleColor.Yellow);
+        ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja visualizar os empréstimos: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
-
         if (NaoEncontrouAmigo(id, false, false))
             return;
-
-
         if (AmigoTemEmprestimos(id))
             return;
 
-        Console.WriteLine("╔═════════════════════════════════════════╗");
-        Console.WriteLine($"║ Emprestimos de {repositorioAmigo.SelecionarPorId(id).Nome}║");
-        Console.WriteLine("╚═════════════════════════════════════════╝");
+        Amigo amigo = repositorioAmigo.SelecionarPorId(id);
+        Emprestimo[] emprestimos = amigo.ObterEmprestimos();
 
+        Console.WriteLine();
+        Console.WriteLine("╔═════╦═════════════════╦═════════════════╦═══════════════╗");
+        Console.WriteLine("║{0, -4} ║ {1, -15} ║ {2, -15} ║ {3, -13} ║",
+                             "Id", "Nome", "Revista", "Data de Devolução");
+        Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
+        int contador = 0;
+        foreach (Emprestimo emprestimo in emprestimos)
+            if (emprestimo != null)
+            {
+                Console.WriteLine(
+               "║{0, -4} ║ {1, -15} ║ {2, -15} ║ {3, -13} ║",
+               emprestimo.Id, emprestimo.amigo.Nome, emprestimo.revista.Titulo, emprestimo.DataDevolucao.ToShortDateString());
+                if (contador < emprestimos.Length - 1)
+                    Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
+                contador++;
+            }
 
         Notificador.ApresentarMensagemParaSair();
     } 
