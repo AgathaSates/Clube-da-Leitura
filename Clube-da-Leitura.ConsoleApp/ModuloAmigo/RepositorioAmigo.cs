@@ -81,9 +81,11 @@ class RepositorioAmigo
         return null;
     }
 
-    public Emprestimo[] VisualizarEmprestimos(Amigo amigo)
+    public Emprestimo[] VisualizarEmprestimos(int id)
     {
+        Amigo amigo = SelecionarPorId(id);
         int contadorEmprestimosPreenchidos = 0;
+
         foreach (Emprestimo emprestimo in amigo.Emprestimos)
             if (emprestimo != null)
                 contadorEmprestimosPreenchidos++;

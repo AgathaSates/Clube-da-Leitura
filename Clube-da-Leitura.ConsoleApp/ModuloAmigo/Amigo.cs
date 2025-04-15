@@ -61,9 +61,11 @@ class Amigo
     public Emprestimo[] ObterEmprestimos()
     {
         int contadorEmprestimosPreenchidos = 0;
+
         foreach (Emprestimo emprestimo in Emprestimos)
             if (emprestimo != null)
                 contadorEmprestimosPreenchidos++;
+
         Emprestimo[] emprestimosSelecionados = new Emprestimo[contadorEmprestimosPreenchidos];
         int contador = 0;
 
