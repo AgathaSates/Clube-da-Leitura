@@ -4,10 +4,10 @@
 
 ## Demonstração
 ### Cadastros
-> ![gif de cadastro](https://i.imgur.com/TDyJpbT.gif)
+> ![gif de cadastro](https://i.imgur.com/ZFoUmwT.gif)
 
 ### Empréstimos
-> ![gif de emprestimo](https://i.imgur.com/vMdQG97.gif)
+> ![gif de emprestimo](https://i.imgur.com/jEgZnS6.gif)
 
 ## Índice
 
