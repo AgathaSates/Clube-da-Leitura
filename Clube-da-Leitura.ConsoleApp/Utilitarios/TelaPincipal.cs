@@ -2,6 +2,7 @@
 using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
+using Clube_da_Leitura.ConsoleApp.ModuloReserva;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.Utilitarios;
@@ -12,7 +13,9 @@ class TelaPincipal
     public readonly TelaCaixa telaCaixa;
     public readonly TelaRevista telaRevista;
     public readonly TelaEmprestimo telaEmprestimo;
+    public readonly TelaReserva telaReserva;
 
+    RepositorioReserva repositorioReserva;
     RepositorioAmigo repositorioAmigo;
     RepositorioCaixa repositorioCaixa;
     RepositorioRevista repositorioRevista;
@@ -21,12 +24,13 @@ class TelaPincipal
 
     public TelaPincipal()
     {
+        repositorioReserva = new RepositorioReserva();
         repositorioAmigo = new RepositorioAmigo();
         repositorioCaixa = new RepositorioCaixa();
         repositorioRevista = new RepositorioRevista();
         repositorioEmprestimo = new RepositorioEmprestimo();
 
-
+        telaReserva = new TelaReserva(repositorioReserva, repositorioRevista, repositorioCaixa);
         telaAmigo = new TelaAmigo(repositorioAmigo);
         telaCaixa = new TelaCaixa(repositorioCaixa);
         telaRevista = new TelaRevista(repositorioRevista, repositorioCaixa, telaCaixa);
@@ -50,7 +54,8 @@ class TelaPincipal
             ColorirTexto.ExibirMensagem("║ 2. Gerenciar Revistas.         ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 3. Gerenciar Caixas.           ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 4. Gerenciar Empréstimos.      ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 5. Sair do Clube.              ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 5. Gerenciar Reservas.         ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 6. Sair do Clube.              ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
             string opcaomenu = Console.ReadLine().Trim();
@@ -65,7 +70,10 @@ class TelaPincipal
 
                 case "4": telaEmprestimo.ApresentarMenu(); break;
 
-                case "5": ApresentarSairDoClube(); return;
+                case "5": telaReserva.ApresentarMenu(); break;
+
+                case "6": ApresentarSairDoClube(); return;
+
 
                 default: Notificador.ApresentarOpcaoInvalida(); break;
             }
