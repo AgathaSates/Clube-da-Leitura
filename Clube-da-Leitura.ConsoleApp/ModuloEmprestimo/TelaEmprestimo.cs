@@ -73,7 +73,7 @@ class TelaEmprestimo
 
         Emprestimo novoEmprestimo = ObterDadosDoEmprestimo(true);
 
-        if (NãoConseguiuValidarEmprestimo(novoEmprestimo, false))
+        if (NãoConseguiuValidarEmprestimo(novoEmprestimo, false, false))
             return;
 
         string mensagemrResultado = repositorioEmprestimo.Inserir(novoEmprestimo);
@@ -106,7 +106,7 @@ class TelaEmprestimo
 
         Emprestimo emprestimoEditado = ObterDadosDoEmprestimo(false, id);
 
-        if (NãoConseguiuValidarEmprestimo(emprestimoEditado, true))
+        if (NãoConseguiuValidarEmprestimo(emprestimoEditado, true, false))
             return;
 
         bool editou = repositorioEmprestimo.Editar(id, emprestimoEditado);
@@ -285,7 +285,7 @@ class TelaEmprestimo
         return false;
     }
 
-    public bool NãoConseguiuValidarEmprestimo(Emprestimo novoEmprestimo, bool ehEditar)
+    public bool NãoConseguiuValidarEmprestimo(Emprestimo novoEmprestimo, bool ehEditar, bool ehInserir)
     {
         if (novoEmprestimo.Validar() != "")
         {
@@ -297,7 +297,9 @@ class TelaEmprestimo
                 return true;
             }
 
-            InserirEmprestimo();
+            if (ehInserir)
+                InserirEmprestimo();
+
             return true;
         }
         return false;
