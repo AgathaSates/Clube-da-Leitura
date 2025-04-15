@@ -10,13 +10,13 @@ class RepositorioAmigo
     public string Inserir(Amigo novoAmigo)
     {
         if (VerificarLimiteAmigos())
-            return "Limite de amigos atingido.";
+            return ">> (X) Limite de amigos atingido.";
 
         if (VerificaAmigoJaExiste(novoAmigo))
-            return "Amigo já cadastrado.";
+            return ">> (X)Amigo já cadastrado.";
 
         Amigos[contadorAmigo++] = novoAmigo;
-        return "(V) Amigo cadastrado com sucesso!";
+        return ">> (V) Amigo cadastrado com sucesso!";
     }
 
     public bool Editar(int id, Amigo novoAmigo)
@@ -37,14 +37,14 @@ class RepositorioAmigo
 
     public bool Excluir(int id)        
     {
-        foreach (Amigo amigo in Amigos)
-            if (amigo != null)
-                if (amigo.Id == id)
+        for (int i = 0; i < Amigos.Length; i++)
+            if (Amigos[i] != null)
+                if (Amigos[i].Id == id)
                 {
-                    if (amigo.VerificaEmprestimoAtivo())
+                    if (Amigos[i].VerificaEmprestimoAtivo())
                         return false;
 
-                    Amigos[id] = null;
+                    Amigos[i] = null;
                     contadorAmigo--;
                     return true;
                 }

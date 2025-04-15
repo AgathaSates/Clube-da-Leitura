@@ -41,10 +41,10 @@ class Amigo
             erros += "> O Nome deve ter entre 3 e 100 caracteres\n";
 
         if (string.IsNullOrWhiteSpace(NomeResponsavel))
-            erros += "> O Nome Responsável é obrigatório!\n";
+            erros += "> O Nome do Responsável é obrigatório!\n";
 
         else if (NomeResponsavel.Length < tamanhoMinimoNome || NomeResponsavel.Length > tamanhoMaximoNome)
-            erros += "> O Nome Responsável deve ter entre 3 e 100 caracteres\n";
+            erros += "> O Nome do Responsável deve ter entre 3 e 100 caracteres\n";
 
         if (string.IsNullOrWhiteSpace(Telefone))
             erros += "> O Telefone é obrigatório!\n";
