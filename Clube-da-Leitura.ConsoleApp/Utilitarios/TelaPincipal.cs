@@ -41,18 +41,18 @@ class TelaPincipal
 
 
             Console.Clear();
-            Console.WriteLine("╔════════════════════════════════╗");
-            Console.WriteLine("║        Clube da Leitura        ║");
-            Console.WriteLine("║════════════════════════════════║");
-            Console.WriteLine("║ Bem-vindo ao Clube da Leitura! ║");
-            Console.WriteLine("║════════════════════════════════║");
-            Console.WriteLine("║ 1. Gerenciar Amigos.           ║");
-            Console.WriteLine("║ 2. Gerenciar Revistas.         ║");
-            Console.WriteLine("║ 3. Gerenciar Caixas.           ║");
-            Console.WriteLine("║ 4. Gerenciar Empréstimos.      ║");
-            Console.WriteLine("║ 5. Sair do Clube.              ║");
-            Console.WriteLine("╚════════════════════════════════╝");
-            Console.Write("> Digite uma opção: ");
+            ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║        Clube da Leitura        ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ Bem-vindo ao Clube da Leitura! ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 1. Gerenciar Amigos.           ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 2. Gerenciar Revistas.         ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 3. Gerenciar Caixas.           ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 4. Gerenciar Empréstimos.      ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 5. Sair do Clube.              ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
             string opcaomenu = Console.ReadLine().Trim();
 
             switch (opcaomenu)
@@ -75,9 +75,9 @@ class TelaPincipal
     public void ApresentarSairDoClube()
     {
         Console.Clear();
-        Console.WriteLine("╔═════════════════════════════════════════╗");
-        Console.WriteLine("║  Obrigado por usar o Clube da Leitura!  ║");
-        Console.WriteLine("║              Até a próxima!             ║");
-        Console.WriteLine("╚═════════════════════════════════════════╝");
+        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║  Obrigado por usar o Clube da Leitura!  ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║              Até a próxima!             ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.DarkCyan);
     }
 }
