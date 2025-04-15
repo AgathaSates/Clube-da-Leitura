@@ -1,5 +1,4 @@
-﻿using System.Runtime.ConstrainedExecution;
-using Clube_da_Leitura.ConsoleApp.Compartilhado;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloCaixa;

@@ -11,13 +11,13 @@ class RepositorioCaixa
     public string Inserir(Caixa caixa)
     {
         if (VerificarLimiteCaixas())
-            return "Limite de caixas atingido.";
+            return ">> (X) Limite de caixas atingido.";
 
         if (VerificaCaixaJaExiste(caixa))
-            return "Caixa já cadastrada, não pode registrar etiquetas duplicadas.";
+            return ">> (X) Caixa já cadastrada, não pode registrar etiquetas duplicadas.";
 
         Caixas[indiceCaixa++] = caixa;
-        return "(V) Caixa cadastrada com sucesso!";
+        return ">> (V) Caixa cadastrada com sucesso!";
 
     }
 
@@ -46,6 +46,7 @@ class RepositorioCaixa
 
                     Caixas[i] = null;
                     indiceCaixa--;
+                    return true;
                 }
         return false;
     }

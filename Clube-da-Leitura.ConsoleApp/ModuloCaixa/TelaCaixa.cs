@@ -1,7 +1,5 @@
-﻿
-using System.Globalization;
+﻿using System.Globalization;
 using Clube_da_Leitura.ConsoleApp.Compartilhado;
-using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 
@@ -19,16 +17,16 @@ class TelaCaixa
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("╔════════════════════════════════╗");
-            Console.WriteLine("║    Gerenciamento de Caixas     ║");
-            Console.WriteLine("║════════════════════════════════║");
-            Console.WriteLine("║ 1- Cadastrar Caixa.            ║");
-            Console.WriteLine("║ 2- Editar Caixa.               ║");
-            Console.WriteLine("║ 3- Excluir Caixa.              ║");
-            Console.WriteLine("║ 4- Visualizar todas as Caixas. ║");
-            Console.WriteLine("║ 5- Voltar ao Menu Principal.   ║");
-            Console.WriteLine("╚════════════════════════════════╝");
-            Console.Write("> Digite uma opção: ");
+            ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║    Gerenciamento de Caixas     ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 1- Cadastrar Caixa.            ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 2- Editar Caixa.               ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 3- Excluir Caixa.              ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 4- Visualizar todas as Caixas. ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("║ 5- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
+            ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
             string opcaoMenu = Console.ReadLine().Trim();
 
             switch (opcaoMenu)
@@ -51,23 +49,19 @@ class TelaCaixa
     public void InserirCaixa()
     {
         Console.Clear();
-        Console.WriteLine("╔═════════════════════════════════════════╗");
-        Console.WriteLine("║             Cadastrar Caixa             ║");
-        Console.WriteLine("╚═════════════════════════════════════════╝");
+        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("║             Cadastrar Caixa             ║", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
+
         Caixa novaCaixa = ObterDadosCaixa(true);
 
-        if (novaCaixa.Validar() != "")
-        {
-            ApresentarDadosInvalidos(novaCaixa);
-
-            InserirCaixa();
-
+        if (NaoConseguiuValidarCaixa(novaCaixa, false))
             return;
-        }
 
         string mensagemResultado = repositorioCaixa.Inserir(novaCaixa);
-        if (mensagemResultado == "(V) Caixa cadastrada com sucesso!")
+
+        if (mensagemResultado == ">> (V) Caixa cadastrada com sucesso!")
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
 
         else
@@ -79,83 +73,69 @@ class TelaCaixa
     public void EditarCaixa()
     {
         Console.Clear();
-        Console.WriteLine("╔═════════════════════════════════════════╗");
-        Console.WriteLine("║              Editar Caixa               ║");
-        Console.WriteLine("╚═════════════════════════════════════════╝");
-        Console.WriteLine();
-        VisualizarTodasAsCaixas(false, false);
+        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("║              Editar Caixa               ║", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
 
-        Console.Write("> Digite o ID da caixa que deseja editar: ");
+        if (!ExisteCaixas())
+            return;
+
+        VisualizarTodasAsCaixas(false, false);
+
+        ColorirTexto.ExibirMensagemSemLinha("> Digite o ID da caixa que deseja editar: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        Caixa caixaExiste = repositorioCaixa.SelecionarPorId(id);
-
-        if (caixaExiste == null)
-        {
-            ColorirTexto.ExibirMensagem("(X) Caixa não encontrada!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemTenteNovamente();
-
-            EditarCaixa();
-
+        if (NaoEncontrouCaixa(id, true, false))
             return;
-        }
 
         Caixa caixaEditada = ObterDadosCaixa(false, id);
 
-        if (caixaEditada.Validar() != "")
-        {
-            ApresentarDadosInvalidos(caixaEditada);
-
-            EditarCaixa();
-
+        if (NaoConseguiuValidarCaixa(caixaEditada, true))
             return;
-        }
 
         bool editou = repositorioCaixa.Editar(id, caixaEditada);
 
         if (!editou)
         {
-            ColorirTexto.ExibirMensagem("(X) Não foi possível editar a caixa!", ConsoleColor.Red);
+            ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar a caixa!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
             return;
         }
 
-        ColorirTexto.ExibirMensagem("(V) Caixa editada com sucesso!", ConsoleColor.Green);
+        ColorirTexto.ExibirMensagem(">> (V) Caixa editada com sucesso!", ConsoleColor.Green);
         Notificador.ApresentarMensagemParaSair();
     }
 
     public void ExcluirCaixa()
     {
         Console.Clear();
-        Console.WriteLine("╔═════════════════════════════════════════╗");
-        Console.WriteLine("║             Excluir Caixa               ║");
-        Console.WriteLine("╚═════════════════════════════════════════╝");
+        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("║             Excluir Caixa               ║", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
+
+        if (!ExisteCaixas())
+            return;
+
         VisualizarTodasAsCaixas(false, false);
 
-        Console.Write("> Digite o ID da caixa que deseja excluir: ");
+        ColorirTexto.ExibirMensagemSemLinha("> Digite o ID da caixa que deseja excluir: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        Caixa caixa = repositorioCaixa.SelecionarPorId(id);
+        if (NaoEncontrouCaixa(id, false, true))
+            return;
 
-        if (caixa == null)
+
+        bool excluiu = repositorioCaixa.Excluir(id);
+        if (!excluiu)
         {
-            ColorirTexto.ExibirMensagem("(X) Caixa não encontrada!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemTenteNovamente();
-            ExcluirCaixa();
+            ColorirTexto.ExibirMensagem(">> (X) Não é possível excluir a caixa, pois ela possui revistas vinculadas.", ConsoleColor.Red);
+            Notificador.ApresentarMensagemParaSair();
             return;
         }
 
-
-        if (repositorioCaixa.Excluir(caixa.Id))
-        {
-            ColorirTexto.ExibirMensagem("(X) Não é possível excluir a caixa, pois ela possui revistas vinculadas.", ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
-            return;
-        }    
-
-        ColorirTexto.ExibirMensagem("(V) Caixa excluída com sucesso!", ConsoleColor.Green);
+        ColorirTexto.ExibirMensagem(">> (V) Caixa excluída com sucesso!", ConsoleColor.Green);
 
         Notificador.ApresentarMensagemParaSair();
 
@@ -166,44 +146,41 @@ class TelaCaixa
         if (exibirTitulo)
         {
             Console.Clear();
-            Console.WriteLine("╔═════════════════════════════════════════╗");
-            Console.WriteLine("║       Visualizar todas as Caixas        ║");
-            Console.WriteLine("╚═════════════════════════════════════════╝");
+            ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+            ColorirTexto.ExibirMensagem("║       Visualizar todas as Caixas        ║", ConsoleColor.Blue);
+            ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
             Console.WriteLine();
         }
 
-        Caixa[] caixas = repositorioCaixa.SelecionarTodos();
-
-        if (caixas.Length == 0)
-        {
-            ColorirTexto.ExibirMensagem("(X) Nenhuma caixa cadastrada!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
+        if (!ExisteCaixas())
             return;
-        }
 
-        Console.WriteLine("╔═════╦══════════════╦════════════╦════════════════════╦═════════════════╗");
-        Console.WriteLine("║{0, -4} ║ {1,-12} ║ {2,-10} ║ {3, -17} ║ {4, -14} ║",
+        Console.WriteLine();
+        Console.WriteLine("╔═════╦══════════════════════╦════════════╦════════════════════╦═════════════════╗");
+        Console.WriteLine("║{0, -4} ║ {1,-20} ║ {2,-10} ║ {3, -18} ║ {4, -15} ║",
                              "Id", "Etiqueta", "cor", "Dias de empréstimo", "Qts de Revistas");
-        Console.WriteLine("║═════╬══════════════╬════════════╬════════════════════╬═════════════════║");
+        Console.WriteLine("║═════╬══════════════════════╬════════════╬════════════════════╬═════════════════║");
 
         int contador = 0;
+        Caixa[] caixas = repositorioCaixa.SelecionarTodos();
 
         foreach (Caixa caixa in caixas)
         {
-            int quantidadeDeRevistasNaCaixa = repositorioCaixa.ContarRevistasNaCaixa(caixa);
-
-
-            Console.WriteLine("║{0, -4} ║ {1, -12} ║ {2, -10} ║ {3, -18} ║ {4, -15} ║",
-            caixa.Id, caixa.Etiqueta, caixa.Cor, caixa.DiasDeEmprestimoMaximo, quantidadeDeRevistasNaCaixa);
-
-            if (contador < caixas.Length -1)
+            if (caixa != null)
             {
-                Console.WriteLine("║═════╬══════════════╬════════════╬════════════════════╬═════════════════║");
-            }
+                int quantidadeDeRevistasNaCaixa = repositorioCaixa.ContarRevistasNaCaixa(caixa);
 
+                Console.WriteLine("║{0, -4} ║ {1, -20} ║ {2, -10} ║ {3, -18} ║ {4, -15} ║",
+                caixa.Id, caixa.Etiqueta, caixa.Cor, caixa.DiasDeEmprestimoMaximo, quantidadeDeRevistasNaCaixa);
+
+                if (contador < caixas.Length - 1)
+                    Console.WriteLine("║═════╬══════════════════════╬════════════╬════════════════════╬═════════════════║");
+            }
             contador++;
         }
-        Console.WriteLine("╚═════╩══════════════╩════════════╩════════════════════╩═════════════════╝");
+
+        Console.WriteLine("╚═════╩══════════════════════╩════════════╩════════════════════╩═════════════════╝");
+        Console.WriteLine();
 
         if (exibirSair)
             Notificador.ApresentarMensagemParaSair();
@@ -211,15 +188,15 @@ class TelaCaixa
 
     public Caixa ObterDadosCaixa(bool criarIdNovo, int idExistente = 0)
     {
-        Console.Write("> Digite a Etiqueta da Caixa: ");
+        ColorirTexto.ExibirMensagemSemLinha("> Digite a Etiqueta da Caixa: ", ConsoleColor.Yellow);
         string etiqueta = Console.ReadLine().Trim();
         etiqueta = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(etiqueta);
 
-        Console.Write("> Digite a Cor da Caixa: ");
+        ColorirTexto.ExibirMensagemSemLinha("> Digite a Cor da Caixa: ", ConsoleColor.Yellow);
         string cor = Console.ReadLine().Trim();
         cor = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(cor);
 
-        Console.Write("> Digite os Dias de Empréstimo: ");
+        ColorirTexto.ExibirMensagemSemLinha("> Digite os Dias de Empréstimo: ", ConsoleColor.Yellow);
         int diasDeEmprestimo = Validador.DigitouUmNumero();
 
         if (criarIdNovo)
@@ -228,11 +205,59 @@ class TelaCaixa
         return new Caixa(idExistente, etiqueta, cor, diasDeEmprestimo);
     }
 
+    public bool ExisteCaixas()
+    {
+
+        if (repositorioCaixa.SelecionarTodos().Length == 0)
+        {
+            ColorirTexto.ExibirMensagem("(X) Nenhuma caixa cadastrada!", ConsoleColor.Red);
+            Console.WriteLine();
+            Notificador.ApresentarMensagemParaSair();
+            return false;
+        }
+        return true;
+    }
+
+    public bool NaoEncontrouCaixa(int id, bool ehEditar, bool ehExcluir)
+    {
+
+        if (repositorioCaixa.SelecionarPorId(id) == null)
+        {
+            ColorirTexto.ExibirMensagem("(X) Caixa não encontrada!", ConsoleColor.Red);
+            Notificador.ApresentarMensagemTenteNovamente();
+            if (ehEditar)
+                EditarCaixa();
+
+            if (ehExcluir)
+                ExcluirCaixa();
+
+        }
+        return false;
+    }
+
+    public bool NaoConseguiuValidarCaixa(Caixa novaCaixa, bool ehEditar)
+    {
+        if (novaCaixa.Validar() != "")
+        {
+            ApresentarDadosInvalidos(novaCaixa);
+
+            if (ehEditar)
+            {
+                EditarCaixa();
+                return true;
+            }
+
+            InserirCaixa();
+
+            return true;
+        }
+        return false;
+    }
+
     public void ApresentarDadosInvalidos(Caixa novaCaixa)
     {
         ColorirTexto.ExibirMensagem("(X) Erro ao cadastrar Caixa!", ConsoleColor.Red);
         ColorirTexto.ExibirMensagem(novaCaixa.Validar(), ConsoleColor.Red);
         Notificador.ApresentarMensagemTenteNovamente();
     }
-
 }
