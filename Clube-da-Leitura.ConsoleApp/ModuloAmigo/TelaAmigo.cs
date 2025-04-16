@@ -23,7 +23,7 @@ class TelaAmigo
             ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 1- Cadastrar Amigo.            ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 2- Editar Amigo.               ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 3- Excluir Amigo.              ║", ConsoleColor.DarkCyan );
+            ColorirTexto.ExibirMensagem("║ 3- Excluir Amigo.              ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 4- Visualizar todos os Amigos. ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 5- Visualizar Empréstimos.     ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("║ 6- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
@@ -61,22 +61,19 @@ class TelaAmigo
         Amigo novoAmigo = ObterDadosAmigo(true);
 
         if (NaoConseguiuValidarAmigo(novoAmigo))
+        {
             InserirAmigo();
+            return;
+        }
 
         string mensagemResultado = repositorioAmigo.Inserir(novoAmigo);
 
         if (mensagemResultado == ">> (V) Amigo cadastrado com sucesso!")
-        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
-            Notificador.ApresentarMensagemParaSair();
-        }
-
         else
-        {
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
-        }
-        
+
+        Notificador.ApresentarMensagemParaSair();
     }
 
     public void EditarAmigo()
@@ -101,22 +98,20 @@ class TelaAmigo
         Amigo amigoEditado = ObterDadosAmigo(false, id);
 
         if (NaoConseguiuValidarAmigo(amigoEditado))
+        {
             EditarAmigo();
-
+            return;
+        }
 
         bool editou = repositorioAmigo.Editar(id, amigoEditado);
 
         if (!editou)
-        {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar o amigo!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
-        }
 
         else
-        {
             ColorirTexto.ExibirMensagem(">> (V) Amigo editado com sucesso!", ConsoleColor.Green);
-            Notificador.ApresentarMensagemParaSair();
-        }
+
+        Notificador.ApresentarMensagemParaSair();
     }
 
     public void ExcluirAmigo()
@@ -141,13 +136,11 @@ class TelaAmigo
         bool excluiu = repositorioAmigo.Excluir(id);
 
         if (!excluiu)
-        {
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível excluir o amigo, pois ele possui um empréstimo ativo", ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
-            return;
-        }
 
-        ColorirTexto.ExibirMensagem(">> (V) Amigo excluído com sucesso!", ConsoleColor.Green);
+        else
+            ColorirTexto.ExibirMensagem(">> (V) Amigo excluído com sucesso!", ConsoleColor.Green);
+
         Notificador.ApresentarMensagemParaSair();
     }
 
@@ -212,7 +205,7 @@ class TelaAmigo
         if (NaoEncontrouAmigo(id))
             return;
 
-        if (AmigoTemEmprestimos(id))
+        if (AmigoNaoTemEmprestimos(id))
             return;
 
         Amigo amigo = repositorioAmigo.SelecionarPorId(id);
@@ -236,7 +229,7 @@ class TelaAmigo
             }
 
         Notificador.ApresentarMensagemParaSair();
-    } 
+    }
 
     public Amigo ObterDadosAmigo(bool criarIdNovo, int idExistente = 0)
     {
@@ -257,7 +250,7 @@ class TelaAmigo
         return new Amigo(idExistente, nome, nomeResponsavel, telefone);
     }
 
-    public bool AmigoTemEmprestimos(int id)
+    public bool AmigoNaoTemEmprestimos(int id)
     {
         Emprestimo[] emprestimos;
         emprestimos = repositorioAmigo.VisualizarEmprestimos(id);
@@ -272,7 +265,6 @@ class TelaAmigo
 
     public bool ExisteAmigos()
     {
-
         if (repositorioAmigo.SelecionarTodos().Length == 0)
         {
             ColorirTexto.ExibirMensagem("(X) Nenhum amigo cadastrado!", ConsoleColor.Red);
@@ -298,7 +290,7 @@ class TelaAmigo
     {
         if (novoAmigo.Validar() != "")
         {
-            ApresentarDadosInvalidos(novoAmigo);   
+            ApresentarDadosInvalidos(novoAmigo);
             return true;
         }
         return false;
