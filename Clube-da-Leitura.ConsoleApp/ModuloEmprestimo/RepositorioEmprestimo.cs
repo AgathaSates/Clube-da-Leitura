@@ -10,18 +10,18 @@ class RepositorioEmprestimo
     public string Inserir(Emprestimo novoEmprestimo)
     {
         if (VerificarLimiteEmprestimos())
-            return "Limite de empréstimos atingido.";
+            return ">> Limite de empréstimos atingido.";
 
         if (VerificaAmigoTemEmprestimoAtivo(novoEmprestimo.amigo))
-            return "Amigo já possui um empréstimo ativo.";
+            return ">> Amigo já possui um empréstimo ativo.";
 
         if (VerificaRevistaJaEmprestada(novoEmprestimo.revista))
-            return "Revista já emprestada.";
+            return ">> Revista já emprestada.";
 
         emprestimos[contadorEmprestimos++] = novoEmprestimo;
         novoEmprestimo.RegistrarEmprestimo();
         novoEmprestimo.amigo.AdicionarEmprestimo(novoEmprestimo);
-        return "(V) Empréstimo cadastrado com sucesso!";
+        return ">> (V) Empréstimo cadastrado com sucesso!";
     }
 
     public bool Editar(int id, Emprestimo novoEmprestimo)
