@@ -30,11 +30,11 @@ class TelaPincipal
         repositorioRevista = new RepositorioRevista();
         repositorioEmprestimo = new RepositorioEmprestimo();
 
-        telaReserva = new TelaReserva(repositorioReserva, repositorioRevista, repositorioCaixa);
         telaAmigo = new TelaAmigo(repositorioAmigo);
         telaCaixa = new TelaCaixa(repositorioCaixa);
         telaRevista = new TelaRevista(repositorioRevista, repositorioCaixa, telaCaixa);
         telaEmprestimo = new TelaEmprestimo(repositorioEmprestimo, repositorioAmigo, repositorioRevista,telaAmigo,telaRevista);
+        telaReserva = new TelaReserva(repositorioAmigo, repositorioReserva, repositorioRevista, repositorioCaixa, telaAmigo, telaRevista);
     }
 
     public void ApresentarMenuPrincipal()
