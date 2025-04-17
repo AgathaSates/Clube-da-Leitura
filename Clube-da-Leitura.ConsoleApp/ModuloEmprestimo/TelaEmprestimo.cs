@@ -361,7 +361,21 @@ class TelaEmprestimo
 
     public bool ExisteMultas()
     {
-        if (!ExisteEmprestimos(false))
+        Emprestimo[] emprestimos = repositorioEmprestimo.SelecionarTodos();
+
+        Multa[] multas = new Multa[emprestimos.Length];
+
+        for (int i = 0; i < emprestimos.Length; i++)
+        {
+            if (emprestimos[i] != null)
+                continue;
+            if (emprestimos[i].Multa != null)
+            {
+                multas[i] = emprestimos[i].Multa;
+            }
+        }
+
+        if (multas.Length == 0)
         {
             ColorirTexto.ExibirMensagem("(X) Nenhuma Multa cadastrada !", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();

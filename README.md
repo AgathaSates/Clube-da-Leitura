@@ -4,10 +4,14 @@
 
 ## Demonstração
 ### Cadastros
-> ![gif de cadastro](https://i.imgur.com/ZFoUmwT.gif)
+> ![gif de cadastro](https://i.imgur.com/Ap94TsG.gif)
 
-### Empréstimos
-> ![gif de emprestimo](https://i.imgur.com/jEgZnS6.gif)
+### Empréstimo e Reserva
+> ![gif de emprestimo](https://i.imgur.com/WeUBKrE.gif)
+
+### Multas
+> Este recurso é gerado apenas caso o amigo não devolveu a revista até sua data de devolução
+![gif multas](https://i.imgur.com/9Krga4T.gif)
 
 ## Índice
 
@@ -32,6 +36,8 @@ Clube da Leitura é uma aplicação de console desenvolvida em C# com o propósito d
 - **Cadastro de Livros e Revistas**: Armazene e consulte informações de obras literárias e periódicos.
 - **Cadastro de Amigos**: Registre os membros do clube que podem realizar empréstimos.
 - **Gestão de Empréstimos**: Empréstimos e devoluções com controle de datas.
+- **Gestão de Reservas**: Reservas de livros.
+- **Multas**: Multas são geradas caso alguma revista não seja devolvida dentro da sua data de devolução.
 - **Interface de Menu Interativo**: Navegação por menus via terminal com opções claras.
 - **Validações de Entrada**: Prevenção de erros por meio de verificações e feedbacks amigáveis.
 
