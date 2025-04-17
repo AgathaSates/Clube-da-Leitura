@@ -7,6 +7,7 @@ class GeradorDeIDs
     public static int IdCaixa = 0;
     public static int IdEmprestimo = 0;
     public static int IdMulta = 0;
+    public static int IdReserva = 0;
 
     public static int GerarIdAmigo()
     {
@@ -30,5 +31,10 @@ class GeradorDeIDs
     public static int GerarIdMulta()
     {
         return ++IdMulta;
+    }
+
+    public static int GerarIdReserva()
+    {
+        return ++IdReserva;
     }
 }
