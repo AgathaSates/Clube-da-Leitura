@@ -176,7 +176,6 @@ class TelaEmprestimo
         Console.WriteLine("║{0, -4} ║ {1,-21} ║ {2,-15} ║ {3,-20} ║ {4, -20} ║ {5, -15} ║",
                           "Id", "Amigo", "Revista", "Data do Empréstimo", "Status de Emprestimo", "Data de Devolução");
         Console.WriteLine("╠═════╬═══════════════════════╬═════════════════╬══════════════════════╬══════════════════════╬═══════════════════╣");
-
         int contador = 0;
         Emprestimo[] emprestimos = repositorioEmprestimo.SelecionarTodos();
 
@@ -200,14 +199,14 @@ class TelaEmprestimo
                 {
                     ColorirTexto.ExibirMensagem(linhaCompleta, ConsoleColor.Red);
                     if (contador < emprestimos.Length - 1)
-                        Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
+                        Console.WriteLine("║═════╬═══════════════════════╬═════════════════╬══════════════════════╬══════════════════════╬═══════════════════║");
                     contador++;
                 }
                 else
                 {
                     Console.WriteLine(linhaCompleta);
                     if (contador < emprestimos.Length - 1)
-                        Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
+                        Console.WriteLine("║═════╬═══════════════════════╬═════════════════╬══════════════════════╬══════════════════════╬═══════════════════║");
                     contador++;
                 }
 
