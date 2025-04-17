@@ -227,7 +227,7 @@ class TelaAmigo
                     Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
                 contador++;
             }
-
+        Console.WriteLine("╚═════╩═════════════════╩═════════════════╩═══════════════╝");
         Notificador.ApresentarMensagemParaSair();
     }
 
