@@ -11,6 +11,7 @@ class Emprestimo
     public DateTime DataIniciodoEmprestimo;
     public DateTime DataDevolucao;
     public string StatusDeEmprestimo; //Aberto / Concluído / Atrasado
+    public Multa Multa;
 
     public Emprestimo(Amigo amigo, Revista revista, DateTime dataEmprestimo)
     {
@@ -53,12 +54,13 @@ class Emprestimo
 
     public bool EmprestimoEstaAtrasado(Emprestimo emprestimo)
     {
-        if (emprestimo.DataDevolucao < DateTime.Now)
+        if (emprestimo.DataDevolucao > DateTime.Now)
         {
+            Multa = new(emprestimo);
             emprestimo.RegistrarAtraso();
+            Multa.GerarMulta(emprestimo);
             return true;
         }
-
         return false;
     }
 
@@ -78,5 +80,14 @@ class Emprestimo
     {
         StatusDeEmprestimo = "Aberto";
         revista.Emprestar();
+    }
+
+    public int ObterDiasAtraso()
+    {
+        DateTime dataDevolvida = DateTime.Now;
+        if (dataDevolvida <= DataDevolucao)
+            return 0;
+
+        return (dataDevolvida - DataDevolucao).Days;
     }
 }

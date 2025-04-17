@@ -1,4 +1,5 @@
 ﻿using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
+using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
@@ -6,6 +7,8 @@ class RepositorioEmprestimo
 {
     public Emprestimo[] emprestimos = new Emprestimo[100];
     public int contadorEmprestimos = 0;
+
+
 
     public string Inserir(Emprestimo novoEmprestimo)
     {
@@ -17,6 +20,8 @@ class RepositorioEmprestimo
 
         if (VerificaRevistaJaEmprestada(novoEmprestimo.revista))
             return ">> Revista já emprestada.";
+        if (novoEmprestimo.amigo.VerificaMultaAtiva())
+            return ">> O Amigo possuí uma multa ativa.";
 
         emprestimos[contadorEmprestimos++] = novoEmprestimo;
         novoEmprestimo.RegistrarEmprestimo();
@@ -30,6 +35,8 @@ class RepositorioEmprestimo
             if (emprestimo != null)
                 if (emprestimo.Id == id)
                 {
+                    if (emprestimo.amigo.VerificaMultaAtiva())
+                        return false;
                     if (emprestimo.amigo.VerificaEmprestimoAtivo())
                         return false;
                     emprestimo.amigo = novoEmprestimo.amigo;
@@ -71,6 +78,21 @@ class RepositorioEmprestimo
 
         return emprestimosSelecionados;
     }
+    public Multa[] SelecionarTodasAsMultas()
+    {
+        Emprestimo[] emprestimos = SelecionarTodos();
+        Multa[] multas = new Multa[emprestimos.Length];
+        int contadorDeMultas = 0;
+        for (int i = 0; i < emprestimos.Length; i++)
+        {
+            if (emprestimos[i].Multa != null)
+            {
+                if (emprestimos[i].Multa.EstaPendente())
+                    multas[contadorDeMultas++] = emprestimos[i].Multa;
+            }
+        }
+        return multas;
+    }
 
     public Emprestimo SelecionarPorId(int id)
     {
@@ -78,6 +100,16 @@ class RepositorioEmprestimo
             if (emprestimo != null)
                 if (emprestimo.Id == id)
                     return emprestimo;
+        return null;
+    }
+
+    public Multa SelecionarMultaPorId(int id)
+    {
+        Multa[] multas = SelecionarTodasAsMultas();
+        foreach (Multa multa in multas)
+            if (multas != null)
+                if (multa.Id == id)
+                    return multa;
         return null;
     }
 
@@ -99,4 +131,6 @@ class RepositorioEmprestimo
             return true;
         return false;
     }
+
+   
 }
