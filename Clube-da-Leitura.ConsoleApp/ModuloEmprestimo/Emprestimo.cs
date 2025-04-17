@@ -54,7 +54,7 @@ class Emprestimo
 
     public bool EmprestimoEstaAtrasado(Emprestimo emprestimo)
     {
-        if (emprestimo.DataDevolucao > DateTime.Now)
+        if (emprestimo.DataDevolucao < DateTime.Now)
         {
             Multa = new(emprestimo);
             emprestimo.RegistrarAtraso();
