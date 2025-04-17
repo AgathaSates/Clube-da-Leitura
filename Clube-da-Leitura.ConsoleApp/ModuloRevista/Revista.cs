@@ -1,5 +1,6 @@
 ﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
+using Clube_da_Leitura.ConsoleApp.ModuloReserva;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 class Revista
@@ -9,6 +10,7 @@ class Revista
     public int NumeroDaEdicao;
     public int AnoDaPublicacao;
     public string StatusDeEmprestimo; //Disponível / Emprestada / Reservada
+    public Reserva Reserva;
     public Caixa Caixa;
 
     public Revista(string titulo, int numeroDaEdicao, int anoDaPublicacao, Caixa caixa)
@@ -53,6 +55,12 @@ class Revista
             erros += "> A Caixa é obrigatória!\n";
 
         return erros;
+    }
+
+    public void Reservar(Reserva novaReserva)
+    {
+        Reserva = novaReserva;
+        StatusDeEmprestimo = "Reservada";
     }
 
     public void Emprestar()

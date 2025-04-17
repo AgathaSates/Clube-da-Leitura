@@ -7,8 +7,6 @@ class RepositorioEmprestimo
     public Emprestimo[] emprestimos = new Emprestimo[100];
     public int contadorEmprestimos = 0;
 
-
-
     public string Inserir(Emprestimo novoEmprestimo)
     {
         if (VerificarLimiteEmprestimos())
@@ -19,12 +17,18 @@ class RepositorioEmprestimo
 
         if (VerificaRevistaJaEmprestada(novoEmprestimo.revista))
             return ">> Revista já emprestada.";
+
         if (novoEmprestimo.amigo.VerificaMultaAtiva())
             return ">> O Amigo possuí uma multa ativa.";
+
+        if (!novoEmprestimo.revista.Reserva.EstaReservada(novoEmprestimo))
+            return $">> A Revista está reservada pelo amigo {novoEmprestimo.revista.Reserva.Amigo.Nome}";
+           
 
         emprestimos[++contadorEmprestimos] = novoEmprestimo;
         novoEmprestimo.RegistrarEmprestimo();
         novoEmprestimo.amigo.AdicionarEmprestimo(novoEmprestimo);
+        novoEmprestimo.amigo.Reserva.ConcluirReserva();
         return ">> (V) Empréstimo cadastrado com sucesso!";
     }
 
@@ -126,7 +130,7 @@ class RepositorioEmprestimo
 
     public bool VerificaRevistaJaEmprestada(Revista revista)
     {
-        if (revista.StatusDeEmprestimo != "Disponível")
+        if (revista.StatusDeEmprestimo == "Emprestada")
             return true;
         return false;
     }

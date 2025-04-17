@@ -94,56 +94,26 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
         {
             Console.Clear();
             ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("║         Excluir Reserva              ║", ConsoleColor.Blue);
+            ColorirTexto.ExibirMensagem("║         Cancelar Reserva             ║", ConsoleColor.Blue);
             ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
 
             if (!ExisteReservas(true))
                 return;
 
             VisualizarTodasAsReservas(false, false);
-            ColorirTexto.ExibirMensagemSemLinha("> Digite o Id da reserva que deseja excluir: ", ConsoleColor.Yellow);
+            ColorirTexto.ExibirMensagemSemLinha("> Digite o Id da reserva que deseja cancelar: ", ConsoleColor.Yellow);
             int idReserva = Validador.DigitouUmNumero();
 
             if (NaoEncontrouReserva(idReserva))
                 return;
 
-            bool excluiu = repositorioReserva.Excluir(idReserva);
+            Reserva reserva = repositorioReserva.SelecionarPorId(idReserva);
+            reserva.ConcluirReserva();
+            reserva.Revista.Devolver();
 
-            if (!excluiu)
-                ColorirTexto.ExibirMensagem(">> (X) Não é possível excluir a Reserva.", ConsoleColor.Red);
-
-            else
-                ColorirTexto.ExibirMensagem(">> (V) Reserva excluído com sucesso!", ConsoleColor.Green);
+            ColorirTexto.ExibirMensagem(">> Reserva Cancelada!", ConsoleColor.Green);
 
             Notificador.ApresentarMensagemParaSair();
-        }
-
-        private bool NaoEncontrouReserva(int idReserva)
-        {
-            if (repositorioReserva.SelecionarPorId(idReserva) == null)
-            {
-                ColorirTexto.ExibirMensagem("Reserva não encontrada!", ConsoleColor.Red);
-                Notificador.ApresentarMensagemParaSair();
-                return true;
-            }
-            return false;
-        }
-
-        public Reserva ObterDadosDaReserva(bool criarIdNovo, int idExistente = 0)
-        {
-            telaAmigo.VisualizarTodosOsAmigos(true, false);
-            ColorirTexto.ExibirMensagemSemLinha("> Selecione o amigo: ", ConsoleColor.Yellow);
-            int idAmigo = Validador.DigitouUmNumero();
-
-            Amigo amigoSelecionado = repositorioAmigo.SelecionarPorId(idAmigo);
-
-            telaRevista.VisualizarTodasAsRevistas(true, false);
-            ColorirTexto.ExibirMensagemSemLinha("Selecione a revista: ", ConsoleColor.Yellow);
-            int idRevista = Validador.DigitouUmNumero();
-
-            Revista revistaSelecionada = repositorioRevista.SelecionarPorId(idRevista);
-
-            return new Reserva(amigoSelecionado, revistaSelecionada);
         }
 
         public void VisualizarTodasAsReservas(bool exibirTitulo, bool exibirSair)
@@ -191,6 +161,34 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
             if (exibirSair)
                 Notificador.ApresentarMensagemParaSair();
+        }
+
+        public Reserva ObterDadosDaReserva(bool criarIdNovo, int idExistente = 0)
+        {
+            telaAmigo.VisualizarTodosOsAmigos(true, false);
+            ColorirTexto.ExibirMensagemSemLinha("> Selecione o amigo: ", ConsoleColor.Yellow);
+            int idAmigo = Validador.DigitouUmNumero();
+
+            Amigo amigoSelecionado = repositorioAmigo.SelecionarPorId(idAmigo);
+
+            telaRevista.VisualizarTodasAsRevistas(true, false);
+            ColorirTexto.ExibirMensagemSemLinha("Selecione a revista: ", ConsoleColor.Yellow);
+            int idRevista = Validador.DigitouUmNumero();
+
+            Revista revistaSelecionada = repositorioRevista.SelecionarPorId(idRevista);
+
+            return new Reserva(amigoSelecionado, revistaSelecionada);
+        }
+
+        public bool NaoEncontrouReserva(int idReserva)
+        {
+            if (repositorioReserva.SelecionarPorId(idReserva) == null)
+            {
+                ColorirTexto.ExibirMensagem("Reserva não encontrada!", ConsoleColor.Red);
+                Notificador.ApresentarMensagemParaSair();
+                return true;
+            }
+            return false;
         }
 
         public bool NaoConseguiuValidarReserva(Reserva novaReserva)

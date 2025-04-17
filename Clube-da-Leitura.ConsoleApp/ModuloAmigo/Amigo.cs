@@ -1,5 +1,6 @@
 ﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
+using Clube_da_Leitura.ConsoleApp.ModuloReserva;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
@@ -9,6 +10,7 @@ class Amigo
     public string Nome;
     public string NomeResponsavel;
     public string Telefone;
+    public Reserva Reserva;
     public Multa[] multas = new Multa[100];
     public Emprestimo[] Emprestimos = new Emprestimo[100];
 
@@ -121,6 +123,10 @@ class Amigo
                 multas[i] = multa;
                 break;
             }
+    }
+    public void AdicionarReserva(Reserva reserva)
+    {
+        Reserva = reserva;
     }
 
     public bool VerificaMultaAtiva()

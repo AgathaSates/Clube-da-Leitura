@@ -235,7 +235,7 @@ class TelaEmprestimo
 
         VisualizarTodosOsEmprestimos(false, false);
 
-        ColorirTexto.ExibirMensagem("> Digite o Id do Empréstimo que deseja registar a devolução: ", ConsoleColor.Yellow);
+        ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do Empréstimo que deseja registar a devolução: ", ConsoleColor.Yellow);
         int idEmprestimo = Validador.DigitouUmNumero();
 
         if (NaoEncontrouEmprestimo(idEmprestimo))
@@ -380,6 +380,7 @@ class TelaEmprestimo
         }
         return false;
     }
+
     public bool NaoEncontrouMulta(int id)
     {
         if (repositorioEmprestimo.SelecionarMultaPorId(id) == null)
@@ -390,7 +391,6 @@ class TelaEmprestimo
         }
         return false;
     }
-
 
     public bool NaoConseguiuValidarEmprestimo(Emprestimo novoEmprestimo)
     {

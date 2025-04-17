@@ -1,6 +1,4 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
-
-namespace Clube_da_Leitura.ConsoleApp.ModuloReserva;
+﻿namespace Clube_da_Leitura.ConsoleApp.ModuloReserva;
 
 class RepositorioReserva
 {
@@ -16,20 +14,10 @@ class RepositorioReserva
             return ">> Esta data já está ocupada.";
 
         reservas[++contadorReservas] = novaReserva;
+        novaReserva.AtivarReserva();
+        novaReserva.Revista.Reservar(novaReserva);
+        novaReserva.Amigo.AdicionarReserva(novaReserva);
         return ">> (V) Reserva cadastrada com sucesso!";
-    }
-
-    public bool Excluir(int idReserva)
-    {
-        foreach (Reserva reserva in reservas)
-            if (reserva != null)
-                if (reserva.Id == idReserva)
-                {
-                    reservas[contadorReservas] = null;
-                    contadorReservas--;
-                    return true;
-                }
-        return false;
     }
 
     public Reserva[] SelecionarTodos()
@@ -73,7 +61,7 @@ class RepositorioReserva
         bool jaOcupada = false;
         foreach (Reserva dataOcupada in reservas)
             if (dataOcupada != null)
-                if (reserva.DataReserva == reserva.DataReserva)
+                if (dataOcupada.DataReserva == reserva.DataReserva)
                     jaOcupada = true;
 
         return jaOcupada;

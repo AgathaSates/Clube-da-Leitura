@@ -1,7 +1,4 @@
-﻿
-using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
-
-namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
+﻿namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 class RepositorioRevista
 {
     public Revista[] Revistas = new Revista[100];

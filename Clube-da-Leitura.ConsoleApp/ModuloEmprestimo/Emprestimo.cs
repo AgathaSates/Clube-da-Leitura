@@ -41,7 +41,7 @@ class Emprestimo
         if (revista == null)
             erros += "> A Revista é obrigatória!\n";
 
-        if (revista.StatusDeEmprestimo != "Disponível")
+        if (revista.StatusDeEmprestimo == "Emprestada")
             erros += "> A Revista não está disponível para empréstimo!\n";
 
         return erros;
