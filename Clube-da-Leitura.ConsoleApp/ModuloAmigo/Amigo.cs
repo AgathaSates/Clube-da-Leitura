@@ -9,6 +9,7 @@ class Amigo
     public string Nome;
     public string NomeResponsavel;
     public string Telefone;
+    public Multa[] multas = new Multa[100];
     public Emprestimo[] Emprestimos = new Emprestimo[100];
 
     public Amigo(string nome, string responsavel, string telefone)
@@ -93,6 +94,41 @@ class Amigo
                 if (emprestimo.StatusDeEmprestimo != "Concluído")
                     return true;
 
+        return false;
+    }
+
+    public Multa[] ObterMultas()
+    {
+        int contadorMultasPreenchidas = 0;
+
+        foreach (Multa multa in multas)
+            if (multa != null)
+                contadorMultasPreenchidas++;
+        Multa[] multasSelecionadas = new Multa[contadorMultasPreenchidas];
+        int contador = 0;
+
+        foreach(Multa multa in multas)
+            if (multa != null)
+                multasSelecionadas[contador++] = multa;
+        return multasSelecionadas;
+    }
+
+    public void AdicionarMulta(Multa multa)
+    {
+        for(int i = 0; i < multas.Length; i++)
+            if (multas[i] == null)
+            {
+                multas[i] = multa;
+                break;
+            }
+    }
+
+    public bool VerificaMultaAtiva()
+    {
+        foreach (Multa multa in multas)
+            if (multa != null)
+                if (multa.EstaPendente())
+                    return true;
         return false;
     }
 }
