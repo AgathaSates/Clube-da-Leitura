@@ -1,5 +1,4 @@
 ﻿using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
-using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
@@ -23,7 +22,7 @@ class RepositorioEmprestimo
         if (novoEmprestimo.amigo.VerificaMultaAtiva())
             return ">> O Amigo possuí uma multa ativa.";
 
-        emprestimos[contadorEmprestimos++] = novoEmprestimo;
+        emprestimos[++contadorEmprestimos] = novoEmprestimo;
         novoEmprestimo.RegistrarEmprestimo();
         novoEmprestimo.amigo.AdicionarEmprestimo(novoEmprestimo);
         return ">> (V) Empréstimo cadastrado com sucesso!";
@@ -55,7 +54,7 @@ class RepositorioEmprestimo
                 {
                     if (emprestimo.StatusDeEmprestimo != "Concluído")
                         return false;
-                    emprestimos[id] = null;
+                    emprestimos[contadorEmprestimos] = null;
                     contadorEmprestimos--;
                     return true;
                 }

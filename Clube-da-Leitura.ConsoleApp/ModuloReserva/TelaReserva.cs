@@ -33,11 +33,12 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
             {
                 Console.Clear();
                 ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.DarkCyan);
-                ColorirTexto.ExibirMensagem("║     Gerenciamento de Empréstimos     ║", ConsoleColor.DarkCyan);
+                ColorirTexto.ExibirMensagem("║     Gerenciamento de Reservas        ║", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagem("║══════════════════════════════════════║", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagem("║ 1- Cadastrar Reserva.                ║", ConsoleColor.DarkCyan);
-                ColorirTexto.ExibirMensagem("║ 3- Excluir Reserva.                  ║", ConsoleColor.DarkCyan);
-                ColorirTexto.ExibirMensagem("║ 5- Visualizar Reservas.              ║", ConsoleColor.DarkCyan);
+                ColorirTexto.ExibirMensagem("║ 2- Excluir Reserva.                  ║", ConsoleColor.DarkCyan);
+                ColorirTexto.ExibirMensagem("║ 3- Visualizar Reservas.              ║", ConsoleColor.DarkCyan);
+                ColorirTexto.ExibirMensagem("║ 4- Voltar ao Menu Principal.         ║", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
                 string opcaoMenu = Console.ReadLine().Trim();
@@ -80,7 +81,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
             string mensagemResultado = repositorioReserva.Inserir(novaReserva);
 
-            if (mensagemResultado == ">> (V) Reserva cadastrado com sucesso!")
+            if (mensagemResultado == ">> (V) Reserva cadastrada com sucesso!")
                 ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
 
             else
@@ -93,7 +94,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
         {
             Console.Clear();
             ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("║         Excluir Reserva           ║", ConsoleColor.Blue);
+            ColorirTexto.ExibirMensagem("║         Excluir Reserva              ║", ConsoleColor.Blue);
             ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
 
             if (!ExisteReservas(true))
@@ -112,14 +113,20 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
                 ColorirTexto.ExibirMensagem(">> (X) Não é possível excluir a Reserva.", ConsoleColor.Red);
 
             else
-                ColorirTexto.ExibirMensagem("(V) Reserva excluído com sucesso!", ConsoleColor.Green);
+                ColorirTexto.ExibirMensagem(">> (V) Reserva excluído com sucesso!", ConsoleColor.Green);
 
             Notificador.ApresentarMensagemParaSair();
         }
 
         private bool NaoEncontrouReserva(int idReserva)
         {
-            throw new NotImplementedException();
+            if (repositorioReserva.SelecionarPorId(idReserva) == null)
+            {
+                ColorirTexto.ExibirMensagem("Reserva não encontrada!", ConsoleColor.Red);
+                Notificador.ApresentarMensagemParaSair();
+                return true;
+            }
+            return false;
         }
 
         public Reserva ObterDadosDaReserva(bool criarIdNovo, int idExistente = 0)
@@ -168,8 +175,8 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
                     if (reserva != null)
                     {
-                        Console.WriteLine("║{0, -4} ║ {1, -20} ║ {2, -10} ║ {3, -18} ║ {4, -15} ║",
-                        reserva.Id, reserva.Amigo, reserva.Revista, reserva.DataReserva, reserva.Status);
+                        Console.WriteLine("║{0, -4} ║ {1, -21} ║ {2, -15} ║ {3, -20} ║ {4, -20} ║",
+                        reserva.Id, reserva.Amigo.Nome, reserva.Revista.Titulo, reserva.DataReserva, reserva.Status);
 
                         if (contador < reservas.Length - 1)
                         {
@@ -182,7 +189,8 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
             Console.WriteLine("╚═════╩═══════════════════════╩═════════════════╩══════════════════════╩══════════════════════╝");
 
-            Notificador.ApresentarMensagemParaSair();
+            if (exibirSair)
+                Notificador.ApresentarMensagemParaSair();
         }
 
         public bool NaoConseguiuValidarReserva(Reserva novaReserva)
