@@ -42,7 +42,7 @@ class RepositorioCaixa
                 if (Caixas[i].Id == id)
                 {
                     if (Caixas[i].revistas[0] != null)
-                        return true;
+                        return false;
 
                     Caixas[i] = null;
                     indiceCaixa--;
