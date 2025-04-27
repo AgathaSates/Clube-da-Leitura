@@ -1,6 +1,6 @@
-﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
-using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
+﻿using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloReserva;
+using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 class Revista

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
+using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
@@ -185,13 +186,13 @@ class TelaAmigo
 
         if (exibirSair)
             Notificador.ApresentarMensagemParaSair();
-    } //adicionar status multa, qts de multas
+    } 
 
     public void VisualizarEmprestimos()
     {
         Console.Clear();
         ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║ Visualizando Empréstimos dos Amigos     ║", ConsoleColor.Blue);
+        ColorirTexto.ExibirMensagem("║   Visualizando Empréstimos dos Amigos   ║", ConsoleColor.Blue);
         ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
 
@@ -275,7 +276,7 @@ class TelaAmigo
         return true;
     }
 
-    public bool NaoEncontrouAmigo(int id)
+    public bool  NaoEncontrouAmigo(int id)
     {
         if (repositorioAmigo.SelecionarPorId(id) == null)
         {

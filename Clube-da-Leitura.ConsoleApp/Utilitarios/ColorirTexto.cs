@@ -1,4 +1,4 @@
-﻿namespace Clube_da_Leitura.ConsoleApp.Compartilhado;
+﻿namespace Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 class ColorirTexto
 {

@@ -3,6 +3,7 @@ using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
+using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 {
