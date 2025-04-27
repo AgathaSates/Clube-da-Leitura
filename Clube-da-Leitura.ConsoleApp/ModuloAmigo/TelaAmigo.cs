@@ -5,16 +5,16 @@ using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
-class TelaAmigo
+public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 {
     public RepositorioAmigo repositorioAmigo;
-
-    public TelaAmigo(RepositorioAmigo repositorioAmigo)
+    string opcaoMenu;
+    public TelaAmigo(RepositorioAmigo repositorioAmigo) : base("Amigo", repositorioAmigo)
     {
         this.repositorioAmigo = repositorioAmigo;
     }
 
-    public void ApresentarMenu()
+    public string ApresentarMenu()
     {
         while (true)
         {
@@ -30,122 +30,31 @@ class TelaAmigo
             ColorirTexto.ExibirMensagem("║ 6- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
             ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
-            string opcaoMenu = Console.ReadLine().Trim();
-
-            switch (opcaoMenu)
-            {
-                case "1": InserirAmigo(); break;
-
-                case "2": EditarAmigo(); break;
-
-                case "3": ExcluirAmigo(); break;
-
-                case "4": VisualizarTodosOsAmigos(true, true); break;
-
-                case "5": VisualizarEmprestimos(); break;
-
-                case "6": return;
-
-                default: Notificador.ApresentarOpcaoInvalida(); break;
-            }
-        }
+            opcaoMenu = Console.ReadLine()!.Trim();
+        }       
     }
 
-    public void InserirAmigo()
+    public void ExecutarOpcao(string opcao)
     {
-        Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Cadastrar Amigo             ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
-
-        Amigo novoAmigo = ObterDadosAmigo(true);
-
-        if (NaoConseguiuValidarAmigo(novoAmigo))
+        switch (opcaoMenu)
         {
-            InserirAmigo();
-            return;
+            case "1": CadastrarRegistro(1); break;
+
+            case "2": EditarRegistro(2); break;
+
+            case "3": ExcluirRegistro(3); break;
+
+            case "4": VisualizarRegistros(true, true); break;
+
+            case "5": VisualizarEmprestimos(); break;
+
+            case "6": return;
+
+            default: Notificador.ApresentarOpcaoInvalida(); break;
         }
-
-        string mensagemResultado = repositorioAmigo.Inserir(novoAmigo);
-
-        if (mensagemResultado == ">> (V) Amigo cadastrado com sucesso!")
-            ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
-        else
-            ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
-
-        Notificador.ApresentarMensagemParaSair();
     }
 
-    public void EditarAmigo()
-    {
-        Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Editar Amigo                ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
-
-        if (!ExisteAmigos())
-            return;
-
-        VisualizarTodosOsAmigos(false, false);
-
-        ColorirTexto.ExibirMensagemSemLinha("> Digite o ID do amigo que deseja editar: ", ConsoleColor.Yellow);
-        int id = Validador.DigitouUmNumero();
-
-        if (NaoEncontrouAmigo(id))
-            return;
-
-        Amigo amigoEditado = ObterDadosAmigo(false, id);
-
-        if (NaoConseguiuValidarAmigo(amigoEditado))
-        {
-            EditarAmigo();
-            return;
-        }
-
-        bool editou = repositorioAmigo.Editar(id, amigoEditado);
-
-        if (!editou)
-            ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar o amigo!", ConsoleColor.Red);
-
-        else
-            ColorirTexto.ExibirMensagem(">> (V) Amigo editado com sucesso!", ConsoleColor.Green);
-
-        Notificador.ApresentarMensagemParaSair();
-    }
-
-    public void ExcluirAmigo()
-    {
-        Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Excluir Amigo               ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
-
-        if (!ExisteAmigos())
-            return;
-
-        VisualizarTodosOsAmigos(false, false);
-
-        ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja excluir: ", ConsoleColor.Yellow);
-        int id = Validador.DigitouUmNumero();
-
-        if (NaoEncontrouAmigo(id))
-            return;
-
-        bool excluiu = repositorioAmigo.Excluir(id);
-
-        if (!excluiu)
-            ColorirTexto.ExibirMensagem(">> (X) Não foi possível excluir o amigo, pois ele possui um empréstimo ativo", ConsoleColor.Red);
-
-        else
-            ColorirTexto.ExibirMensagem(">> (V) Amigo excluído com sucesso!", ConsoleColor.Green);
-
-        Notificador.ApresentarMensagemParaSair();
-    }
-
-    public void VisualizarTodosOsAmigos(bool exibirTitulo, bool exibirSair)
+    public override void VisualizarRegistros(bool exibirTitulo, bool exibirSair)
     {
         if (exibirTitulo)
         {
@@ -156,7 +65,7 @@ class TelaAmigo
             Console.WriteLine();
         }
 
-        if (!ExisteAmigos())
+        if (!ExisteRegistros())
             return;
 
         Console.WriteLine();
@@ -166,7 +75,7 @@ class TelaAmigo
         Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
 
         int contador = 0;
-        Amigo[] amigos = repositorioAmigo.SelecionarTodos();
+        List<Amigo> amigos = repositorioAmigo.SelecionarTodosRegistros();
 
         foreach (Amigo amigo in amigos)
             if (amigo != null)
@@ -175,7 +84,7 @@ class TelaAmigo
                "║{0, -4} ║ {1, -15} ║ {2, -15} ║ {3, -13} ║",
                amigo.Id, amigo.Nome, amigo.NomeResponsavel, amigo.Telefone);
 
-                if (contador < amigos.Length - 1)
+                if (contador < amigos.Count - 1)
                     Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
 
                 contador++;
@@ -196,21 +105,21 @@ class TelaAmigo
         ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
         Console.WriteLine();
 
-        if (!ExisteAmigos())
+        if (!ExisteRegistros())
             return;
 
-        VisualizarTodosOsAmigos(false, false);
+        VisualizarRegistros(false, false);
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja visualizar os empréstimos: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NaoEncontrouAmigo(id))
+        if (NãoEncontrouRegistro(id))
             return;
 
         if (AmigoNaoTemEmprestimos(id))
             return;
 
-        Amigo amigo = repositorioAmigo.SelecionarPorId(id);
-        Emprestimo[] emprestimos = amigo.ObterEmprestimos();
+        Amigo amigo = repositorioAmigo.SelecionarRegistroPorId(id);
+        List <Emprestimo> emprestimos = amigo.ObterEmprestimos();
 
         Console.WriteLine();
         Console.WriteLine("╔═════╦═════════════════╦═════════════════╦═══════════════╗");
@@ -224,7 +133,7 @@ class TelaAmigo
                 Console.WriteLine(
                "║{0, -4} ║ {1, -15} ║ {2, -15} ║ {3, -13} ║",
                emprestimo.Id, emprestimo.amigo.Nome, emprestimo.revista.Titulo, emprestimo.DataDevolucao.ToShortDateString());
-                if (contador < emprestimos.Length - 1)
+                if (contador < emprestimos.Count - 1)
                     Console.WriteLine("║═════╬═════════════════╬═════════════════╬═══════════════║");
                 contador++;
             }
@@ -232,18 +141,18 @@ class TelaAmigo
         Notificador.ApresentarMensagemParaSair();
     }
 
-    public Amigo ObterDadosAmigo(bool criarIdNovo, int idExistente = 0)
+    public override Amigo ObterDadosDoRegistro(bool criarIdNovo, int idExistente = 0)
     {
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Nome do Amigo: ", ConsoleColor.Yellow);
-        string nome = Console.ReadLine().Trim();
+        string nome = Console.ReadLine()!.Trim();
         nome = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nome);
 
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Nome do Responsável: ", ConsoleColor.Yellow);
-        string nomeResponsavel = Console.ReadLine().Trim();
+        string nomeResponsavel = Console.ReadLine()!.Trim();
         nomeResponsavel = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nomeResponsavel);
 
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Telefone do Responsável ( 11 digitos (XX)XXXXX-XXXX): ", ConsoleColor.Yellow);
-        string telefone = Console.ReadLine().Trim();
+        string telefone = Console.ReadLine()!.Trim();
 
         if (criarIdNovo)
             return new Amigo(nome, nomeResponsavel, telefone);
@@ -253,45 +162,12 @@ class TelaAmigo
 
     public bool AmigoNaoTemEmprestimos(int id)
     {
-        Emprestimo[] emprestimos;
+        List <Emprestimo> emprestimos;
         emprestimos = repositorioAmigo.VisualizarEmprestimos(id);
-        if (emprestimos.Length == 0)
+        if (emprestimos.Count == 0)
         {
             ColorirTexto.ExibirMensagem("(X) Nenhum empréstimo encontrado!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return true;
-        }
-        return false;
-    }
-
-    public bool ExisteAmigos()
-    {
-        if (repositorioAmigo.SelecionarTodos().Length == 0)
-        {
-            ColorirTexto.ExibirMensagem("(X) Nenhum amigo cadastrado!", ConsoleColor.Red);
-            Console.WriteLine();
-            Notificador.ApresentarMensagemParaSair();
-            return false;
-        }
-        return true;
-    }
-
-    public bool  NaoEncontrouAmigo(int id)
-    {
-        if (repositorioAmigo.SelecionarPorId(id) == null)
-        {
-            ColorirTexto.ExibirMensagem("(X) Amigo não encontrado!", ConsoleColor.Red);
-            Notificador.ApresentarMensagemParaSair();
-            return true;
-        }
-        return false;
-    }
-
-    public bool NaoConseguiuValidarAmigo(Amigo novoAmigo)
-    {
-        if (novoAmigo.Validar() != "")
-        {
-            ApresentarDadosInvalidos(novoAmigo);
             return true;
         }
         return false;
@@ -302,5 +178,44 @@ class TelaAmigo
         ColorirTexto.ExibirMensagem("(X) Erro ao cadastrar Amigo!", ConsoleColor.Red);
         ColorirTexto.ExibirMensagemSemLinha(novoAmigo.Validar(), ConsoleColor.Red);
         Notificador.ApresentarMensagemTenteNovamente();
+    }
+
+    public override bool NãoConseguiuValidar(Amigo amigo)
+    {
+        if (amigo.Validar() != "")
+        {
+            ApresentarDadosInvalidos(amigo);
+            return true;
+        }
+        return false;
+    }
+
+    public override void ApresentarTitulo(int numeroDoTitulo)
+    {
+       switch(numeroDoTitulo)
+        {
+            case 1:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Cadastrar Amigo             ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            case 2:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Editar Amigo                ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            case 3:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Excluir Amigo               ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            default: ColorirTexto.ExibirMensagem(">> Nenhum título encontrado!", ConsoleColor.Red); break;
+        }
     }
 }

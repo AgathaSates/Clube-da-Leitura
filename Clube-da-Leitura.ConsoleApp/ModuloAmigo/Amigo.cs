@@ -1,23 +1,21 @@
 ﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 using Clube_da_Leitura.ConsoleApp.ModuloReserva;
-using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
-class Amigo
+public class Amigo : EntidadeBase<Amigo>
 {
-    public int Id;
-    public string Nome;
-    public string NomeResponsavel;
-    public string Telefone;
+    public int Id { get; set; }
+    public string Nome { get; set; }
+    public string NomeResponsavel { get; set; }
+    public string Telefone { get; set; }
     public Reserva Reserva;
-    public Multa[] multas = new Multa[100];
-    public Emprestimo[] Emprestimos = new Emprestimo[100];
+    public List<Multa> multas = new List<Multa>();
+    public List<Emprestimo> Emprestimos = new List<Emprestimo>();
 
-    public Amigo(string nome, string responsavel, string telefone)
+    public Amigo(string nome, string responsavel, string telefone) // id novo
     {
-        Id = GeradorDeIDs.GerarIdAmigo();
         Nome = nome;
         NomeResponsavel = responsavel;
         Telefone = telefone;
@@ -29,9 +27,17 @@ class Amigo
         Nome = nome;
         NomeResponsavel = responsavel;
         Telefone = telefone;
+    } // mantem o id
+
+    public override void AtualizarRegistro(Amigo registroEditado)
+    {
+        Id = registroEditado.Id;
+        Nome = registroEditado.Nome;
+        NomeResponsavel = registroEditado.NomeResponsavel;
+        Telefone = registroEditado.Telefone;
     }
 
-    public string Validar()
+    public override string Validar()
     {
         int tamanhoMaximoNome = 100;
         int tamanhoMinimoNome = 3;
@@ -62,32 +68,14 @@ class Amigo
         return erros;
     }
 
-    public Emprestimo[] ObterEmprestimos()
+    public List<Emprestimo> ObterEmprestimos()
     {
-        int contadorEmprestimosPreenchidos = 0;
-
-        foreach (Emprestimo emprestimo in Emprestimos)
-            if (emprestimo != null)
-                contadorEmprestimosPreenchidos++;
-
-        Emprestimo[] emprestimosSelecionados = new Emprestimo[contadorEmprestimosPreenchidos];
-        int contador = 0;
-
-        foreach (Emprestimo emprestimo in Emprestimos)
-            if (emprestimo != null)
-                emprestimosSelecionados[contador++] = emprestimo;
-
-        return emprestimosSelecionados;
+        return Emprestimos;
     }
 
     public void AdicionarEmprestimo(Emprestimo emprestimo)
     {
-        for (int i = 0; i < Emprestimos.Length; i++)
-            if (Emprestimos[i] == null)
-            {
-                Emprestimos[i] = emprestimo;
-                break;
-            }
+        Emprestimos.Add(emprestimo);
     }
 
     public bool VerificaEmprestimoAtivo()
@@ -100,31 +88,16 @@ class Amigo
         return false;
     }
 
-    public Multa[] ObterMultas()
+    public List<Multa> ObterMultas()
     {
-        int contadorMultasPreenchidas = 0;
-
-        foreach (Multa multa in multas)
-            if (multa != null)
-                contadorMultasPreenchidas++;
-        Multa[] multasSelecionadas = new Multa[contadorMultasPreenchidas];
-        int contador = 0;
-
-        foreach(Multa multa in multas)
-            if (multa != null)
-                multasSelecionadas[contador++] = multa;
-        return multasSelecionadas;
+        return multas;
     }
 
     public void AdicionarMulta(Multa multa)
     {
-        for(int i = 0; i < multas.Length; i++)
-            if (multas[i] == null)
-            {
-                multas[i] = multa;
-                break;
-            }
+       multas.Add(multa);
     }
+
     public void AdicionarReserva(Reserva reserva)
     {
         Reserva = reserva;
@@ -138,4 +111,5 @@ class Amigo
                     return true;
         return false;
     }
+
 }
