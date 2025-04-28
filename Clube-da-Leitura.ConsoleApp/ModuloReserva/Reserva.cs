@@ -1,28 +1,31 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
+using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
-using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloReserva;
 
-class Reserva
+public class Reserva : EntidadeBase<Reserva>
 {
-    public int Id;
-    public Amigo Amigo;
-    public Revista Revista;
-    public DateTime DataReserva;
-    public string Status;
+    public Amigo Amigo { get; set; }
+    public Revista Revista { get; set; }
+    public DateTime DataReserva { get; set; }
+    public string Status { get; set; }
 
     public Reserva(Amigo amigo, Revista revista)
     {
-        Id = GeradorDeIDs.GerarIdReserva();
         Amigo = amigo;
         Revista = revista;
         DataReserva = DateTime.Now.AddDays(7);
         Status = "Ativa";
     }
 
-    public string Validar()
+    public override void AtualizarRegistro(Reserva registroEditado)
+    {
+       
+    }
+
+    public override string Validar()
     {
         string erros = "";
 
@@ -58,4 +61,5 @@ class Reserva
     {
         Status = "Concluída";
     }
+
 }

@@ -2,18 +2,16 @@
 
 namespace Clube_da_Leitura.ConsoleApp.Compartilhado;
 
-public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
+public abstract class TelaBase<T> where T : EntidadeBase<T>
 {
     protected string nomeEntidade;
-    private readonly RepositorioBase<T> repositorio;
+    private RepositorioBase<T> repositorio;
 
-    protected TelaBase(string nomeEntidade, int quantidadeLetras, RepositorioBase<T> repositorio)
+    protected TelaBase(string nomeEntidade, RepositorioBase<T> repositorio)
     {
         this.nomeEntidade = nomeEntidade;
         this.repositorio = repositorio;
     }
-
-    public abstract string ApresentarMenu();
 
     public virtual void CadastrarRegistro(int numeroDoTitulo) 
     {
@@ -21,12 +19,12 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
 
         T novoRegistro = ObterDadosDoRegistro(true);
 
-        if (NãoConseguiuValidar(novoRegistro))
+        if (NaoConseguiuValidar(novoRegistro))
         { 
             CadastrarRegistro(numeroDoTitulo);
             return;
-        }
 
+        }
         string mensagemResultado = repositorio.CadastrarRegistro(novoRegistro);
         ConseguiuCadastrar(mensagemResultado);
 
@@ -45,12 +43,12 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
         ColorirTexto.ExibirMensagemSemLinha($">> Digite o Id do {nomeEntidade} que deseja editar: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if(NãoEncontrouRegistro(id))
+        if(NaoEncontrouRegistro(id))
             return;
 
         T registroEditado = ObterDadosDoRegistro(false, id);
 
-        if (NãoConseguiuValidar(registroEditado))
+        if (NaoConseguiuValidar(registroEditado))
         {
             EditarRegistro(numeroDoTitulo);
             return;
@@ -75,7 +73,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
         ColorirTexto.ExibirMensagemSemLinha($">> Digite o Id do {nomeEntidade} que deseja excluir: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NãoEncontrouRegistro(id))
+        if (NaoEncontrouRegistro(id))
             return;
 
         bool excluiu = repositorio.ExcluirRegistro(id);
@@ -83,7 +81,6 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
 
         Notificador.ApresentarMensagemParaSair();
     }
-
  
     public abstract void VisualizarRegistros(bool v1, bool v2);
 
@@ -92,7 +89,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
     public virtual void ConseguiuCadastrar(string mensagemResulado)
     {
 
-        if (mensagemResulado == ">> (V) Registro cadastrado com sucesso!" )
+        if (mensagemResulado == ">> (V) Registro cadastrado com sucesso!")
             ColorirTexto.ExibirMensagem(mensagemResulado, ConsoleColor.Green);
         else
             ColorirTexto.ExibirMensagem(mensagemResulado, ConsoleColor.Red);
@@ -125,9 +122,9 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
         return true;
     }
 
-    public abstract bool NãoConseguiuValidar(T Registro);
+    public abstract bool NaoConseguiuValidar(T Registro);
 
-    public virtual bool NãoEncontrouRegistro(int id)
+    public virtual bool NaoEncontrouRegistro(int id)
     {
         if (repositorio.NaoEncontrouRegistro(id))
         {
@@ -139,5 +136,4 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>, ITelaCrud
     }
 
     public abstract void ApresentarTitulo(int numeroDoTitulo);
-  
 }

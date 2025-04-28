@@ -1,18 +1,18 @@
-﻿using Clube_da_Leitura.ConsoleApp.Utilitarios;
+﻿namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 
-namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
-
-class Multa
+public class Multa
 {
     public const decimal ValorPorDiaAtraso = 2;
 
-    public int Id;
-    public Emprestimo Emprestimo;
-    public string Status;
+    public int Id { get; set; }
+    public Emprestimo Emprestimo { get; set; }
+    public string Status { get; set; } // Pendente / Quitada
+
+    private int contadorIds = 0;
 
     public Multa(Emprestimo emprestimo)
     {
-        Id = GeradorDeIDs.IdMulta;
+        Id = ++contadorIds;
         Emprestimo = emprestimo;
     }
 

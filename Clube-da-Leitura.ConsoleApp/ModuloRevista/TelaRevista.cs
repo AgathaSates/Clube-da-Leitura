@@ -5,75 +5,70 @@ using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
-class TelaRevista
+public class TelaRevista : TelaBase<Revista>, ITelaCrud
 {
     public RepositorioRevista repositorioRevista;
     public RepositorioCaixa repositorioCaixa;
     public TelaCaixa telaCaixa;
+    string opcaoMenu;
 
-    public TelaRevista(RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa, TelaCaixa telaCaixa)
+    public TelaRevista(RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa, TelaCaixa telaCaixa) : base("Revista", repositorioRevista)
     {
         this.repositorioRevista = repositorioRevista;
         this.repositorioCaixa = repositorioCaixa;
         this.telaCaixa = telaCaixa;
     }
 
-    public void ApresentarMenu()
-    {
-        while (true)
-        {
-            Console.Clear();
-            ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║    Gerenciamento de Revistas   ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 1- Cadastrar Revista.          ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 2- Editar Revista.             ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 3- Excluir Revista.            ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 4- Visualizar todas as Revistas║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 5- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
-            string opcaoMenu = Console.ReadLine().Trim();
-
-            switch (opcaoMenu)
-            {
-                case "1": InserirRevista(); break;
-
-                case "2": EditarRevista(); break;
-
-                case "3": ExcluirRevista(); break;
-
-                case "4": VisualizarTodasAsRevistas(true, true); break;
-
-                case "5": return;
-
-                default: Notificador.ApresentarOpcaoInvalida(); break;
-            }
-        }
-    }
-
-    public void InserirRevista()
+    public string ApresentarMenu()
     {
         Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Cadastrar Revista           ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
+        ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║    Gerenciamento de Revistas   ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 1- Cadastrar Revista.          ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 2- Editar Revista.             ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 3- Excluir Revista.            ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 4- Visualizar todas as Revistas║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 5- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
+        return opcaoMenu = Console.ReadLine()!.Trim();
+    }
+    public void ExecutarOpcao(string opcao)
+    {
+        switch (opcaoMenu)
+        {
+            case "1": CadastrarRegistro(1); break;
 
-        if (!telaCaixa.ExisteCaixas())
+            case "2": EditarRegistro(2); break;
+
+            case "3": ExcluirRegistro(3); break;
+
+            case "4": VisualizarRegistros(true, true); break;
+
+            case "5": return;
+
+            default: Notificador.ApresentarOpcaoInvalida(); break;
+        }
+    }
+    public void CadastrarRegistro(int numeroDoTitulo)
+    {
+        ApresentarTitulo(numeroDoTitulo);
+
+        if (!telaCaixa.ExisteRegistros())
             return;
 
-        Revista novaRevista = ObterDadosRevista(true);
+        Revista novaRevista = ObterDadosDoRegistro(true);
 
-        if (NaoConseguiuValidarRevista(novaRevista))
+        if (NaoConseguiuValidar(novaRevista))
         {
-            InserirRevista();
+            CadastrarRegistro(numeroDoTitulo);
             return;
         }
 
-        string mensagemResultado = repositorioRevista.Inserir(novaRevista);
+        string mensagemResultado = repositorioRevista.CadastrarRegistro(novaRevista);
 
-        if (mensagemResultado == ">> (V) Revista cadastrada com sucesso!")
+        if (mensagemResultado == ">> (V) Registro cadastrado com sucesso!")
             ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
 
         else
@@ -82,76 +77,34 @@ class TelaRevista
         Notificador.ApresentarMensagemParaSair();
     }
 
-    public void EditarRevista()
+    public override void ExcluirRegistro(int numeroDoTitulo)
     {
-        Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Editar Revista              ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
+        ApresentarTitulo(numeroDoTitulo);
 
-        if (!ExisteRevistas())
+        if (!ExisteRegistros())
             return;
 
-        VisualizarTodasAsRevistas(false, false);
-
-        ColorirTexto.ExibirMensagem("> Digite o Id da Revista que deseja editar: ", ConsoleColor.Yellow);
-        int id = Validador.DigitouUmNumero();
-
-        if (NaoEncontrouRevista(id))
-            return;
-
-        Revista revistaEditada = ObterDadosRevista(false, id);
-
-        if (NaoConseguiuValidarRevista(revistaEditada))
-        {
-            EditarRevista();
-            return;
-        }
-
-        bool editou = repositorioRevista.Editar(id, revistaEditada);
-
-        if (!editou)
-            ColorirTexto.ExibirMensagem(">> (X) Não foi possível editar a revista!", ConsoleColor.Red);
-
-        else
-            ColorirTexto.ExibirMensagem(">> (V) Revista editada com sucesso!", ConsoleColor.Green);
-           
-        Notificador.ApresentarMensagemParaSair();
-    }
-
-    public void ExcluirRevista()
-    {
-        Console.Clear();
-        ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("║             Excluir Revista             ║", ConsoleColor.Blue);
-        ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
-        Console.WriteLine();
-
-        if (!ExisteRevistas())
-            return;
-
-        VisualizarTodasAsRevistas(false, false);
+        VisualizarRegistros(false, false);
 
         ColorirTexto.ExibirMensagem("Digite o Id da Revista que deseja excluir: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NaoEncontrouRevista(id))
+        if (NaoEncontrouRegistro(id))
             return;
 
 
-        bool excluiu = repositorioRevista.Excluir(id);
+        bool excluiu = repositorioRevista.ExcluirRegistro(id);
 
         if (!excluiu)
             ColorirTexto.ExibirMensagem(">> (X) Não foi possível excluir a revista, pois ela está emprestada!", ConsoleColor.Red);
 
         else
             ColorirTexto.ExibirMensagem("(V) Revista excluída com sucesso!", ConsoleColor.Green);
-           
+
         Notificador.ApresentarMensagemParaSair();
     }
 
-    public void VisualizarTodasAsRevistas(bool exibirTitulo, bool exibirSair)
+    public override void VisualizarRegistros(bool exibirTitulo, bool exibirSair)
     {
         if (exibirTitulo)
         {
@@ -162,7 +115,7 @@ class TelaRevista
             Console.WriteLine();
         }
 
-        if (!ExisteRevistas())
+        if (!ExisteRegistros())
             return;
 
         Console.WriteLine("╔═════╦═══════════════════════════╦═════════════════╦══════════════════════╦══════════════════════╦════════════════════╗");
@@ -172,14 +125,14 @@ class TelaRevista
 
         int contador = 0;
 
-        Revista[] revistas = repositorioRevista.SelecionarTodos();
+        List<Revista> revistas = repositorioRevista.SelecionarTodosRegistros();
 
         foreach (var revista in revistas)
         {
 
             Console.WriteLine("║{0, -4} ║ {1,-25} ║ {2,-15} ║ {3,-20} ║ {4, -20} ║ {5, -18} ║",
                 revista.Id, revista.Titulo, revista.NumeroDaEdicao, revista.AnoDaPublicacao, revista.StatusDeEmprestimo, revista.Caixa.Etiqueta);
-            if (contador < revistas.Length - 1)
+            if (contador < revistas.Count - 1)
                 Console.WriteLine("╠═════╬═══════════════════════════╬═════════════════╬══════════════════════╬══════════════════════╬════════════════════╣");
 
             contador++;
@@ -189,7 +142,7 @@ class TelaRevista
             Notificador.ApresentarMensagemParaSair();
     }
 
-    public Revista ObterDadosRevista(bool criarIdNovo, int idExistente = 0)
+    public override Revista ObterDadosDoRegistro(bool criarIdNovo, int idExistente = 0)
     {
         ColorirTexto.ExibirMensagemSemLinha("> Digite o título da revista: ", ConsoleColor.Yellow);
         string titulo = Console.ReadLine().Trim();
@@ -206,12 +159,12 @@ class TelaRevista
         ColorirTexto.ExibirMensagem("            >> Selecione a caixa que deseja inserir a revista:", ConsoleColor.DarkMagenta);
         ColorirTexto.ExibirMensagem("═════════════════════════════════════════════════════════════════════════════════", ConsoleColor.DarkMagenta);
 
-        telaCaixa.VisualizarTodasAsCaixas(false,false);
+        telaCaixa.VisualizarRegistros(false, false);
 
         ColorirTexto.ExibirMensagemSemLinha(">> Digite o Id da Caixa: ", ConsoleColor.Yellow);
         int idCaixa = Validador.DigitouUmNumero();
 
-        Caixa caixaSelecionada = repositorioCaixa.SelecionarPorId(idCaixa);
+        Caixa caixaSelecionada = repositorioCaixa.SelecionarRegistroPorId(idCaixa);
 
         if (criarIdNovo)
             return new Revista(titulo, numeroDaEdicao, anoDaPublicacao, caixaSelecionada);
@@ -219,30 +172,18 @@ class TelaRevista
         return new Revista(idExistente, titulo, numeroDaEdicao, anoDaPublicacao, caixaSelecionada);
     }
 
-    public bool NaoEncontrouRevista(int id)
+    public override bool NaoEncontrouRegistro(int id)
     {
-        if (repositorioRevista.SelecionarPorId(id) == null)
+        if (repositorioRevista.SelecionarRegistroPorId(id) == null)
         {
             ColorirTexto.ExibirMensagem("(X) Revista não encontrada!", ConsoleColor.Red);
             Notificador.ApresentarMensagemParaSair();
-            return true;    
+            return true;
         }
         return false;
     }
 
-    public bool ExisteRevistas()
-    {
-        if (repositorioRevista.SelecionarTodos().Length == 0)
-        {
-            ColorirTexto.ExibirMensagem("(X) Não há revistas cadastradas!", ConsoleColor.Red);
-            Console.WriteLine();
-            Notificador.ApresentarMensagemParaSair();
-            return false;
-        }
-        return true;
-    }
-
-    public bool NaoConseguiuValidarRevista(Revista novaRevista)
+    public override bool NaoConseguiuValidar(Revista novaRevista)
     {
         if (novaRevista.Validar() != "")
         {
@@ -257,5 +198,34 @@ class TelaRevista
         ColorirTexto.ExibirMensagem("(X) Erro ao cadastrar Revista!", ConsoleColor.Red);
         ColorirTexto.ExibirMensagem(novaRevista.Validar(), ConsoleColor.Red);
         Notificador.ApresentarMensagemTenteNovamente();
+    }
+
+    public override void ApresentarTitulo(int numeroDoTitulo)
+    {
+        switch (numeroDoTitulo)
+        {
+            case 1:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Cadastrar Revista           ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            case 2:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Editar Revista              ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            case 3:
+                Console.Clear();
+                ColorirTexto.ExibirMensagem("╔═════════════════════════════════════════╗", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("║             Excluir Revista             ║", ConsoleColor.Blue);
+                ColorirTexto.ExibirMensagem("╚═════════════════════════════════════════╝", ConsoleColor.Blue);
+                Console.WriteLine();
+                break;
+            default: ColorirTexto.ExibirMensagem(">> Nenhum título encontrado!", ConsoleColor.Red); break;
+        }
     }
 }

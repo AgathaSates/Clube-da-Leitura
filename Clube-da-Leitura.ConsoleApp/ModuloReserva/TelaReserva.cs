@@ -1,13 +1,12 @@
 ﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
-using Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 {
-    class TelaReserva
+    public class TelaReserva : TelaBase<Reserva>, ITela
     {
         public RepositorioAmigo repositorioAmigo;
         public RepositorioReserva repositorioReserva;
@@ -16,8 +15,9 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
         public TelaAmigo telaAmigo;
         public TelaRevista telaRevista;
+        string opcaoMenu;
 
-        public TelaReserva(RepositorioAmigo repositorioAmigo, RepositorioReserva repositorioReserva, RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa, TelaAmigo telaAmigo, TelaRevista telaRevista)
+        public TelaReserva(RepositorioAmigo repositorioAmigo, RepositorioReserva repositorioReserva, RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa, TelaAmigo telaAmigo, TelaRevista telaRevista) : base("Reserva", repositorioReserva)
         {
             this.repositorioAmigo = repositorioAmigo;
             this.repositorioReserva = repositorioReserva;
@@ -28,7 +28,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
             this.telaRevista = telaRevista;
         }
 
-        internal void ApresentarMenu()
+        public string ApresentarMenu()
         {
             while (true)
             {
@@ -42,73 +42,64 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
                 ColorirTexto.ExibirMensagem("║ 4- Voltar ao Menu Principal.         ║", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.DarkCyan);
                 ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
-                string opcaoMenu = Console.ReadLine().Trim();
-
-                switch (opcaoMenu)
-                {
-                    case "1": InserirReserva(); break;
-
-                    case "2": ExcluirReserva(); break;
-
-                    case "3": VisualizarTodasAsReservas(true, true); break;
-
-                    case "4": return;
-
-                    default: Notificador.ApresentarOpcaoInvalida(); break;
-                }
+                return opcaoMenu = Console.ReadLine().Trim();
             }
         }
 
-        public void InserirReserva()
+        public void ExecutarOpcao(string opcao)
         {
-            Console.Clear();
-            ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("║         Cadastrar Reserva            ║", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
-
-            if (!telaAmigo.ExisteAmigos())
-                return;
-
-            if (!telaRevista.ExisteRevistas())
-                return;
-
-            Reserva novaReserva = ObterDadosDaReserva(true);
-
-            if (NaoConseguiuValidarReserva(novaReserva))
+            switch (opcao)
             {
-                InserirReserva();
+                case "1": CadastrarRegistro(1); break;
+
+                case "2": ExcluirRegistro(2); break;
+
+                case "3": VisualizarRegistros(true, true); break;
+
+                case "4": return;
+
+                default: Notificador.ApresentarOpcaoInvalida(); break;
+            }
+        }
+        public override void CadastrarRegistro(int numeroDoTitulo)
+        {
+            ApresentarTitulo(numeroDoTitulo);
+
+            if (!telaAmigo.ExisteRegistros())
+                return;
+
+            if (!telaRevista.ExisteRegistros())
+                return;
+
+            Reserva novaReserva = ObterDadosDoRegistro(true);
+
+            if (NaoConseguiuValidar(novaReserva))
+            {
+                CadastrarRegistro(numeroDoTitulo);
                 return;
             }
 
-            string mensagemResultado = repositorioReserva.Inserir(novaReserva);
-
-            if (mensagemResultado == ">> (V) Reserva cadastrada com sucesso!")
-                ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Green);
-
-            else
-                ColorirTexto.ExibirMensagem(mensagemResultado, ConsoleColor.Red);
+            string mensagemResultado = repositorioReserva.CadastrarRegistro(novaReserva);
+            ConseguiuCadastrar(mensagemResultado);
 
             Notificador.ApresentarMensagemParaSair();
         }
 
-        public void ExcluirReserva()
+        public override void ExcluirRegistro(int numeroDoTitulo)
         {
-            Console.Clear();
-            ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("║         Cancelar Reserva             ║", ConsoleColor.Blue);
-            ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
+            ApresentarTitulo(numeroDoTitulo);
 
             if (!ExisteReservas(true))
                 return;
 
-            VisualizarTodasAsReservas(false, false);
+            VisualizarRegistros(false, false);
             ColorirTexto.ExibirMensagemSemLinha("> Digite o Id da reserva que deseja cancelar: ", ConsoleColor.Yellow);
             int idReserva = Validador.DigitouUmNumero();
 
-            if (NaoEncontrouReserva(idReserva))
+            if (NaoEncontrouRegistro(idReserva))
                 return;
 
-            Reserva reserva = repositorioReserva.SelecionarPorId(idReserva);
+            Reserva reserva = repositorioReserva.SelecionarRegistroPorId(idReserva);
             reserva.ConcluirReserva();
             reserva.Revista.Devolver();
 
@@ -117,7 +108,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
             Notificador.ApresentarMensagemParaSair();
         }
 
-        public void VisualizarTodasAsReservas(bool exibirTitulo, bool exibirSair)
+        public override void VisualizarRegistros(bool exibirTitulo, bool exibirSair)
         {
             if (exibirTitulo)
             {
@@ -138,7 +129,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
 
             int contador = 0;
-            Reserva[] reservas = repositorioReserva.SelecionarTodos();
+            List<Reserva> reservas = repositorioReserva.SelecionarTodosRegistros();
 
             foreach (Reserva reserva in reservas)
             {
@@ -149,7 +140,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
                         Console.WriteLine("║{0, -4} ║ {1, -21} ║ {2, -15} ║ {3, -20} ║ {4, -20} ║",
                         reserva.Id, reserva.Amigo.Nome, reserva.Revista.Titulo, reserva.DataReserva, reserva.Status);
 
-                        if (contador < reservas.Length - 1)
+                        if (contador < reservas.Count - 1)
                         {
                             Console.WriteLine("║═════╬══════════════════════╬════════════╬════════════════════╬═════════════════║");
                             contador++;
@@ -164,35 +155,25 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
                 Notificador.ApresentarMensagemParaSair();
         }
 
-        public Reserva ObterDadosDaReserva(bool criarIdNovo, int idExistente = 0)
+        public override Reserva ObterDadosDoRegistro(bool criarIdNovo, int idExistente = 0)
         {
-            telaAmigo.VisualizarTodosOsAmigos(true, false);
+            telaAmigo.VisualizarRegistros(true, false);
             ColorirTexto.ExibirMensagemSemLinha("> Selecione o amigo: ", ConsoleColor.Yellow);
             int idAmigo = Validador.DigitouUmNumero();
 
-            Amigo amigoSelecionado = repositorioAmigo.SelecionarPorId(idAmigo);
+            Amigo amigoSelecionado = repositorioAmigo.SelecionarRegistroPorId(idAmigo);
 
-            telaRevista.VisualizarTodasAsRevistas(true, false);
+            telaRevista.VisualizarRegistros(true, false);
             ColorirTexto.ExibirMensagemSemLinha("Selecione a revista: ", ConsoleColor.Yellow);
             int idRevista = Validador.DigitouUmNumero();
 
-            Revista revistaSelecionada = repositorioRevista.SelecionarPorId(idRevista);
+            Revista revistaSelecionada = repositorioRevista.SelecionarRegistroPorId(idRevista);
 
             return new Reserva(amigoSelecionado, revistaSelecionada);
         }
 
-        public bool NaoEncontrouReserva(int idReserva)
-        {
-            if (repositorioReserva.SelecionarPorId(idReserva) == null)
-            {
-                ColorirTexto.ExibirMensagem("Reserva não encontrada!", ConsoleColor.Red);
-                Notificador.ApresentarMensagemParaSair();
-                return true;
-            }
-            return false;
-        }
 
-        public bool NaoConseguiuValidarReserva(Reserva novaReserva)
+        public override bool NaoConseguiuValidar(Reserva novaReserva)
         {
             if (novaReserva.Validar() != "")
             {
@@ -204,7 +185,7 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
 
         public bool ExisteReservas(bool exibirMensagem)
         {
-            if (repositorioReserva.SelecionarTodos().Length == 0)
+            if (repositorioReserva.SelecionarTodosRegistros().Count == 0)
             {
                 if (exibirMensagem)
                 {
@@ -221,6 +202,29 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloReserva
             ColorirTexto.ExibirMensagem("(X) Erro ao cadastrar Reserva!", ConsoleColor.Red);
             ColorirTexto.ExibirMensagem(novaReserva.Validar(), ConsoleColor.Red);
             Notificador.ApresentarMensagemTenteNovamente();
+        }
+
+        public override void ApresentarTitulo(int numeroDoTitulo)
+        {
+
+            switch (numeroDoTitulo)
+            {
+                case 1:
+                    Console.Clear();
+                    ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
+                    ColorirTexto.ExibirMensagem("║         Cadastrar Reserva            ║", ConsoleColor.Blue);
+                    ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
+                    Console.WriteLine();
+                    break;
+                case 2:
+                    Console.Clear();
+                    ColorirTexto.ExibirMensagem("╔══════════════════════════════════════╗", ConsoleColor.Blue);
+                    ColorirTexto.ExibirMensagem("║         Cancelar Reserva             ║", ConsoleColor.Blue);
+                    ColorirTexto.ExibirMensagem("╚══════════════════════════════════════╝", ConsoleColor.Blue);
+                    Console.WriteLine();
+                    break;
+                default: ColorirTexto.ExibirMensagem(">> Nenhum título encontrado!", ConsoleColor.Red); break;
+            }
         }
     }
 }

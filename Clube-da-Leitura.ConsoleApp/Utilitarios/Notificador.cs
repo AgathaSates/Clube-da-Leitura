@@ -5,8 +5,7 @@ class Notificador
     public static void ApresentarOpcaoInvalida()
     {
         Console.WriteLine();
-        ColorirTexto.ExibirMensagemSemLinha("(X) Opção inválida! Pressione Enter para tentar novamente.", ConsoleColor.DarkYellow);
-        Console.ReadKey();
+        ColorirTexto.ExibirMensagemSemLinha("(X) Opção inválida!", ConsoleColor.DarkYellow);
     }
 
     public static void ApresentarMensagemTenteNovamente()

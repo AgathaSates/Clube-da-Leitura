@@ -16,27 +16,24 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 
     public string ApresentarMenu()
     {
-        while (true)
-        {
-            Console.Clear();
-            ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║    Gerenciamento de Amigos     ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 1- Cadastrar Amigo.            ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 2- Editar Amigo.               ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 3- Excluir Amigo.              ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 4- Visualizar todos os Amigos. ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 5- Visualizar Empréstimos.     ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("║ 6- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
-            ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
-            opcaoMenu = Console.ReadLine()!.Trim();
-        }       
+        Console.Clear();
+        ColorirTexto.ExibirMensagem("╔════════════════════════════════╗", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║    Gerenciamento de Amigos     ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║════════════════════════════════║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 1- Cadastrar Amigo.            ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 2- Editar Amigo.               ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 3- Excluir Amigo.              ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 4- Visualizar todos os Amigos. ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 5- Visualizar Empréstimos.     ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("║ 6- Voltar ao Menu Principal.   ║", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagem("╚════════════════════════════════╝", ConsoleColor.DarkCyan);
+        ColorirTexto.ExibirMensagemSemLinha("> Digite uma opção: ", ConsoleColor.Yellow);
+        return opcaoMenu = Console.ReadLine()!.Trim();
     }
 
     public void ExecutarOpcao(string opcao)
     {
-        switch (opcaoMenu)
+        switch (opcao)
         {
             case "1": CadastrarRegistro(1); break;
 
@@ -95,7 +92,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 
         if (exibirSair)
             Notificador.ApresentarMensagemParaSair();
-    } 
+    }
 
     public void VisualizarEmprestimos()
     {
@@ -112,14 +109,14 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
         ColorirTexto.ExibirMensagemSemLinha("> Digite o Id do amigo que deseja visualizar os empréstimos: ", ConsoleColor.Yellow);
         int id = Validador.DigitouUmNumero();
 
-        if (NãoEncontrouRegistro(id))
+        if (NaoEncontrouRegistro(id))
             return;
 
         if (AmigoNaoTemEmprestimos(id))
             return;
 
         Amigo amigo = repositorioAmigo.SelecionarRegistroPorId(id);
-        List <Emprestimo> emprestimos = amigo.ObterEmprestimos();
+        List<Emprestimo> emprestimos = amigo.ObterEmprestimos();
 
         Console.WriteLine();
         Console.WriteLine("╔═════╦═════════════════╦═════════════════╦═══════════════╗");
@@ -162,7 +159,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 
     public bool AmigoNaoTemEmprestimos(int id)
     {
-        List <Emprestimo> emprestimos;
+        List<Emprestimo> emprestimos;
         emprestimos = repositorioAmigo.VisualizarEmprestimos(id);
         if (emprestimos.Count == 0)
         {
@@ -180,7 +177,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
         Notificador.ApresentarMensagemTenteNovamente();
     }
 
-    public override bool NãoConseguiuValidar(Amigo amigo)
+    public override bool NaoConseguiuValidar(Amigo amigo)
     {
         if (amigo.Validar() != "")
         {
@@ -192,7 +189,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 
     public override void ApresentarTitulo(int numeroDoTitulo)
     {
-       switch(numeroDoTitulo)
+        switch (numeroDoTitulo)
         {
             case 1:
                 Console.Clear();

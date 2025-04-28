@@ -14,7 +14,7 @@ public class RepositorioAmigo : RepositorioBase<Amigo>
 
         registros.Add(novoAmigo);
         novoAmigo.Id = ++contadorIds;
-        return ">> (V) Amigo cadastrado com sucesso!";
+        return ">> (V) Registro cadastrado com sucesso!";
     }
 
     public override bool ExcluirRegistro(int id)        

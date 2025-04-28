@@ -2,11 +2,9 @@
 
 public abstract class RepositorioBase<T> where T : EntidadeBase<T>
 {
-    private List<T> registros = new List<T>();
-    private int contadorIds = 0;
+    public List<T> registros = new List<T>();
 
     public abstract string CadastrarRegistro(T novoRegistro);
-    
 
     public virtual bool EditarRegistro(int idRegistro, T registroEditado)
     {
@@ -33,9 +31,12 @@ public abstract class RepositorioBase<T> where T : EntidadeBase<T>
     public T SelecionarRegistroPorId(int idRegistro)
     {
         foreach (T registro in registros)
+        {
             if (registro.Id == idRegistro)
+            {
                 return registro;
-
+            }
+        }
         return null;
     }
 

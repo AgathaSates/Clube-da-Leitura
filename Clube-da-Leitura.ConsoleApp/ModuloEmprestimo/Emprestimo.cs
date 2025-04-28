@@ -1,21 +1,19 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
+using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
-using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
-class Emprestimo
+public class Emprestimo : EntidadeBase<Emprestimo>
 {
-    public int Id;
-    public Amigo amigo;
-    public Revista revista;
-    public DateTime DataIniciodoEmprestimo;
-    public DateTime DataDevolucao;
-    public string StatusDeEmprestimo; //Aberto / Concluído / Atrasado
-    public Multa Multa;
+    public Amigo amigo { get; set; }
+    public Revista revista { get; set; }
+    public DateTime DataIniciodoEmprestimo { get; set; }
+    public DateTime DataDevolucao { get; set; }
+    public string StatusDeEmprestimo { get; set; } //Aberto / Concluído / Atrasado
+    public Multa Multa { get; set; }
 
     public Emprestimo(Amigo amigo, Revista revista, DateTime dataEmprestimo)
     {
-        Id = GeradorDeIDs.GerarIdEmprestimo();
         this.amigo = amigo;
         this.revista = revista;
         DataIniciodoEmprestimo = dataEmprestimo;
@@ -31,7 +29,14 @@ class Emprestimo
         DataIniciodoEmprestimo = dataEmprestimo;
         DataDevolucao = ObterDataDeDevolucao();
     }
-    public string Validar()
+
+    public override void AtualizarRegistro(Emprestimo registroEditado)
+    {
+        amigo = registroEditado.amigo;
+        revista = registroEditado.revista;
+        DataIniciodoEmprestimo = registroEditado.DataIniciodoEmprestimo;
+    }
+    public override string Validar()
     {
         string erros = "";
 

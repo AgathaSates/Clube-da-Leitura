@@ -6,7 +6,6 @@ namespace Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 
 public class Amigo : EntidadeBase<Amigo>
 {
-    public int Id { get; set; }
     public string Nome { get; set; }
     public string NomeResponsavel { get; set; }
     public string Telefone { get; set; }
@@ -31,7 +30,6 @@ public class Amigo : EntidadeBase<Amigo>
 
     public override void AtualizarRegistro(Amigo registroEditado)
     {
-        Id = registroEditado.Id;
         Nome = registroEditado.Nome;
         NomeResponsavel = registroEditado.NomeResponsavel;
         Telefone = registroEditado.Telefone;

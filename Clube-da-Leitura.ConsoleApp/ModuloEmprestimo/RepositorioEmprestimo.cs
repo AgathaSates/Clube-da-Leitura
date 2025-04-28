@@ -1,16 +1,14 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
+using Clube_da_Leitura.ConsoleApp.ModuloAmigo;
 using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloEmprestimo;
-class RepositorioEmprestimo
+public class RepositorioEmprestimo : RepositorioBase<Emprestimo>
 {
-    public Emprestimo[] emprestimos = new Emprestimo[100];
-    public int contadorEmprestimos = 0;
+    private int contadorIds = 0;
 
-    public string Inserir(Emprestimo novoEmprestimo)
+    public override string CadastrarRegistro(Emprestimo novoEmprestimo)
     {
-        if (VerificarLimiteEmprestimos())
-            return ">> Limite de empréstimos atingido.";
 
         if (VerificaAmigoTemEmprestimoAtivo(novoEmprestimo.amigo))
             return ">> Amigo já possui um empréstimo ativo.";
@@ -18,23 +16,23 @@ class RepositorioEmprestimo
         if (VerificaRevistaJaEmprestada(novoEmprestimo.revista))
             return ">> Revista já emprestada.";
 
-        if (novoEmprestimo.amigo.VerificaMultaAtiva())
+        if (VerificaAmigoMultaAtiva(novoEmprestimo.amigo))
             return ">> O Amigo possuí uma multa ativa.";
 
-        if (!novoEmprestimo.revista.Reserva.EstaReservada(novoEmprestimo))
+        if (!VerificaRevistaReservada(novoEmprestimo))
             return $">> A Revista está reservada pelo amigo {novoEmprestimo.revista.Reserva.Amigo.Nome}";
-           
 
-        emprestimos[++contadorEmprestimos] = novoEmprestimo;
+        registros.Add(novoEmprestimo);
+        novoEmprestimo.Id = ++contadorIds;
         novoEmprestimo.RegistrarEmprestimo();
         novoEmprestimo.amigo.AdicionarEmprestimo(novoEmprestimo);
         novoEmprestimo.amigo.Reserva.ConcluirReserva();
-        return ">> (V) Empréstimo cadastrado com sucesso!";
+        return ">> (V) Registro cadastrado com sucesso!";
     }
 
-    public bool Editar(int id, Emprestimo novoEmprestimo)
+    public override bool EditarRegistro(int id, Emprestimo novoEmprestimo)
     {
-        foreach (Emprestimo emprestimo in emprestimos)
+        foreach (Emprestimo emprestimo in registros)
             if (emprestimo != null)
                 if (emprestimo.Id == id)
                 {
@@ -42,9 +40,7 @@ class RepositorioEmprestimo
                         return false;
                     if (emprestimo.amigo.VerificaEmprestimoAtivo())
                         return false;
-                    emprestimo.amigo = novoEmprestimo.amigo;
-                    emprestimo.revista = novoEmprestimo.revista;
-                    emprestimo.DataIniciodoEmprestimo = novoEmprestimo.DataIniciodoEmprestimo;
+                    emprestimo.AtualizarRegistro(novoEmprestimo);
                     return true;
                 }
         return false;
@@ -52,54 +48,46 @@ class RepositorioEmprestimo
 
     public bool Excluir(int id)
     {
-        foreach (Emprestimo emprestimo in emprestimos)
-            if (emprestimo != null)
-                if (emprestimo.Id == id)
-                {
-                    if (emprestimo.StatusDeEmprestimo != "Concluído")
-                        return false;
-                    emprestimos[contadorEmprestimos] = null;
-                    contadorEmprestimos--;
-                    return true;
-                }
-        return false;
+        Emprestimo emprestimo = SelecionarPorId(id);
+
+        if (emprestimo == null)
+            return false;
+
+        if (emprestimo.StatusDeEmprestimo != "Concluído")
+            return false;
+
+        registros.Remove(emprestimo);
+        return true;
+
     }
 
-    public Emprestimo[] SelecionarTodos()
+    public List<Emprestimo> SelecionarTodos()
     {
-        int contadorEmprestimosPreenchidos = 0;
-        foreach (Emprestimo emprestimo in emprestimos)
-            if (emprestimo != null)
-                contadorEmprestimosPreenchidos++;
-
-        Emprestimo[] emprestimosSelecionados = new Emprestimo[contadorEmprestimosPreenchidos];
-        int contador = 0;
-
-        foreach (Emprestimo emprestimo in emprestimos)
-            if (emprestimo != null)
-                emprestimosSelecionados[contador++] = emprestimo;
-
-        return emprestimosSelecionados;
+        return registros;
     }
-    public Multa[] SelecionarTodasAsMultas()
+
+    public List<Multa> SelecionarTodasAsMultas()
     {
-        Emprestimo[] emprestimos = SelecionarTodos();
-        Multa[] multas = new Multa[emprestimos.Length];
-        int contadorDeMultas = 0;
-        for (int i = 0; i < emprestimos.Length; i++)
+        List<Emprestimo> emprestimos = SelecionarTodos();
+        List<Multa> multas = new List<Multa>();
+
+        foreach (Emprestimo emprestimo in emprestimos)
         {
-            if (emprestimos[i].Multa != null)
+            if (emprestimo != null)
             {
-                if (emprestimos[i].Multa.EstaPendente())
-                    multas[contadorDeMultas++] = emprestimos[i].Multa;
+                if (emprestimo.Multa != null)
+                {
+                    multas.Add(emprestimo.Multa);
+                }
             }
         }
+
         return multas;
     }
 
     public Emprestimo SelecionarPorId(int id)
     {
-        foreach (Emprestimo emprestimo in emprestimos)
+        foreach (Emprestimo emprestimo in registros)
             if (emprestimo != null)
                 if (emprestimo.Id == id)
                     return emprestimo;
@@ -108,19 +96,12 @@ class RepositorioEmprestimo
 
     public Multa SelecionarMultaPorId(int id)
     {
-        Multa[] multas = SelecionarTodasAsMultas();
+        List<Multa> multas = SelecionarTodasAsMultas();
         foreach (Multa multa in multas)
             if (multas != null)
                 if (multa.Id == id)
                     return multa;
         return null;
-    }
-
-    public bool VerificarLimiteEmprestimos()
-    {
-        if (contadorEmprestimos == emprestimos.Length)
-            return true;
-        return false;
     }
 
     public bool VerificaAmigoTemEmprestimoAtivo(Amigo amigo)
@@ -130,10 +111,17 @@ class RepositorioEmprestimo
 
     public bool VerificaRevistaJaEmprestada(Revista revista)
     {
-        if (revista.StatusDeEmprestimo == "Emprestada")
-            return true;
-        return false;
+
+        return revista.EstaEmprestada();
     }
 
-   
+    public bool VerificaAmigoMultaAtiva(Amigo amigo)
+    {
+        return amigo.VerificaMultaAtiva();
+    }
+
+    public bool VerificaRevistaReservada(Emprestimo novoEmprestimo)
+    {
+        return novoEmprestimo.revista.Reserva.EstaReservada(novoEmprestimo);
+    }
 }

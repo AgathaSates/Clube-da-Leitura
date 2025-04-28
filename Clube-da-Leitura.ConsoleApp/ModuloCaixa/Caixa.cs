@@ -1,22 +1,21 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloRevista;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
+using Clube_da_Leitura.ConsoleApp.ModuloRevista;
 using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 
-class Caixa
+public class Caixa : EntidadeBase<Caixa>
 {
 
-    public int Id;
-    public string Etiqueta;
-    public string Cor;
-    public int DiasDeEmprestimoMaximo;
+    public string Etiqueta { get; set; }
+    public string Cor { get; set; }
+    public int DiasDeEmprestimoMaximo { get; set; }
 
-    public Revista[] revistas = new Revista[100];
+    public List<Revista> revistas = new List<Revista>();
     public readonly string[] CoresPermitidas = { "Amarelo", "Azul", "Verde", "Vermelho", "Rosa" };
 
     public Caixa(string etiqueta, string cor, int diasDeEmprestimo)
     {
-        Id = GeradorDeIDs.GerarIdCaixa();
         Etiqueta = etiqueta;
         Cor = cor;
         DiasDeEmprestimoMaximo = diasDeEmprestimo;
@@ -30,7 +29,14 @@ class Caixa
         DiasDeEmprestimoMaximo = diasDeEmprestimo;
     }
 
-    public string Validar()
+    public override void AtualizarRegistro(Caixa registroEditado)
+    {
+        Etiqueta = registroEditado.Etiqueta;
+        Cor = registroEditado.Cor;
+        DiasDeEmprestimoMaximo = registroEditado.DiasDeEmprestimoMaximo;
+    }
+
+    public override string Validar()
     {
         int tamanhoMaximoEtiqueta = 50;
         int tamanhoMinimoEtiqueta = 3;
@@ -68,23 +74,17 @@ class Caixa
         return cores;
     }
 
+    public bool TemRevistas()
+    {
+        return revistas.Count > 0;
+    }
     public void AdicionarRevista(Revista revista)
     {
-        for (int i = 0; i < revistas.Length; i++)
-            if (revistas[i] == null)
-            {
-                revistas[i] = revista;
-                break;
-            }
+        revistas.Add(revista);
     }
 
     public void RemoverRevista(Revista revista)
     {
-        for (int i = 0; i < revistas.Length; i++)
-            if (revistas[i] == revista)
-            {
-                revistas[i] = null;
-                break;
-            }
+        revistas.Remove(revista);
     } 
 }

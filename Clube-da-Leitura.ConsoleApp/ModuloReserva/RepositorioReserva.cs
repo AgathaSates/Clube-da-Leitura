@@ -1,69 +1,33 @@
-﻿namespace Clube_da_Leitura.ConsoleApp.ModuloReserva;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
 
-class RepositorioReserva
+namespace Clube_da_Leitura.ConsoleApp.ModuloReserva;
+
+public class RepositorioReserva : RepositorioBase<Reserva>
 {
-    public Reserva[] reservas = new Reserva[100];
-    public int contadorReservas = 0;
+    private int contadorIds = 0;
 
-    public string Inserir(Reserva novaReserva)
+    public override string CadastrarRegistro(Reserva novoRegistro)
     {
-        if (VerificarLimiteReservas())
-            return ">> Limite de reservas atingido.";
-
-        if (VerificaDataJaOcupada(novaReserva))
+        if (VerificaDataJaOcupada(novoRegistro))
             return ">> Esta data já está ocupada.";
 
-        reservas[++contadorReservas] = novaReserva;
-        novaReserva.AtivarReserva();
-        novaReserva.Revista.Reservar(novaReserva);
-        novaReserva.Amigo.AdicionarReserva(novaReserva);
-        return ">> (V) Reserva cadastrada com sucesso!";
-    }
-
-    public Reserva[] SelecionarTodos()
-    {
-        int contadorReservasPreenchidas = 0;
-
-        foreach (Reserva reserva in reservas)
-            if (reserva != null)
-                contadorReservasPreenchidas++;
-
-        Reserva[] reservasSelecionadas = new Reserva[contadorReservasPreenchidas];
-
-        int contador = 0;
-
-        foreach (Reserva reserva in reservas)
-            if (reserva != null)
-                reservasSelecionadas[contador++] = reserva;
-
-
-        return reservasSelecionadas;
-    }
-
-    public Reserva SelecionarPorId(int id)
-    {
-        foreach (Reserva reserva in reservas)
-            if (reserva != null)
-                if (reserva.Id == id)
-                    return reserva;
-        return null;
-    }
-
-    public bool VerificarLimiteReservas()
-    {
-        if (contadorReservas == reservas.Length)
-            return true;
-        return false;
+        registros.Add(novoRegistro);
+        novoRegistro.Id = ++contadorIds;
+        novoRegistro.AtivarReserva();
+        novoRegistro.Revista.Reservar(novoRegistro);
+        novoRegistro.Amigo.AdicionarReserva(novoRegistro);
+        return ">> (V) Registro cadastrado com sucesso!";
     }
 
     public bool VerificaDataJaOcupada(Reserva reserva)
     {
         bool jaOcupada = false;
-        foreach (Reserva dataOcupada in reservas)
+        foreach (Reserva dataOcupada in registros)
             if (dataOcupada != null)
                 if (dataOcupada.DataReserva == reserva.DataReserva)
                     jaOcupada = true;
 
         return jaOcupada;
     }
+
 }

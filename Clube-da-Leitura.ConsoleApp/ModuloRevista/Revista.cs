@@ -1,21 +1,20 @@
-﻿using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
+﻿using Clube_da_Leitura.ConsoleApp.Compartilhado;
+using Clube_da_Leitura.ConsoleApp.ModuloCaixa;
 using Clube_da_Leitura.ConsoleApp.ModuloReserva;
 using Clube_da_Leitura.ConsoleApp.Utilitarios;
 
 namespace Clube_da_Leitura.ConsoleApp.ModuloRevista;
-class Revista
+public class Revista : EntidadeBase<Revista>
 {
-    public int Id;
-    public string Titulo;
-    public int NumeroDaEdicao;
-    public int AnoDaPublicacao;
-    public string StatusDeEmprestimo; //Disponível / Emprestada / Reservada
-    public Reserva Reserva;
-    public Caixa Caixa;
+    public string Titulo { get; set; }
+    public int NumeroDaEdicao { get; set; }
+    public int AnoDaPublicacao { get; set; }
+    public string StatusDeEmprestimo { get; set; }//Disponível / Emprestada / Reservada
+    public Reserva Reserva { get; set; }
+    public Caixa Caixa { get; set; }
 
     public Revista(string titulo, int numeroDaEdicao, int anoDaPublicacao, Caixa caixa)
     {
-        Id = GeradorDeIDs.GerarIdRevista();
         Titulo = titulo;
         NumeroDaEdicao = numeroDaEdicao;
         AnoDaPublicacao = anoDaPublicacao;
@@ -33,7 +32,15 @@ class Revista
         Caixa = caixa;
     }
 
-    public string Validar()
+    public override void AtualizarRegistro(Revista registroEditado)
+    {
+        Titulo = registroEditado.Titulo;
+        NumeroDaEdicao = registroEditado.NumeroDaEdicao;
+        AnoDaPublicacao = registroEditado.AnoDaPublicacao;
+        Caixa = registroEditado.Caixa;
+    }
+
+    public override string Validar()
     {
         int tamanhoMaximoTitulo = 100;
         int tamanhoMinimoTitulo = 2;
@@ -72,4 +79,14 @@ class Revista
     {
         StatusDeEmprestimo = "Disponível";
     }
+
+    public bool EstaEmprestada()
+    {
+        if (StatusDeEmprestimo == "Emprestada")
+           return true;
+
+        return false;
+    }
+
+ 
 }

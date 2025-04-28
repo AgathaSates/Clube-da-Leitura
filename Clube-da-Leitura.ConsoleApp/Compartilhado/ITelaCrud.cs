@@ -1,10 +1,9 @@
 ﻿namespace Clube_da_Leitura.ConsoleApp.Compartilhado;
 
-public interface ITelaCrud
+public interface ITelaCrud : ITela
 {
-    void ApresentarMenu();
-    void CadastrarRegistro();
-    void EditarRegistro();
-    void ExcluirRegistro();
+    void CadastrarRegistro(int numeroDoTitulo);
+    void EditarRegistro(int numeroDoTitulo);
+    void ExcluirRegistro(int numeroDoTitulo);
     void VisualizarRegistros(bool exibirTitulo, bool exibirSair);
 }
